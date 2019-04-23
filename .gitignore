@@ -1,0 +1,27 @@
+# Ignore all
+*
+
+# Unignore all with extensions; ignore executables
+!*.*
+
+# ignore all dirs
+*/
+*/*
+!test
+!test/*.cc
+
+
+ckpoint*
+*.txt
+*.o
+
+Test*.cc
+!Test_hmc.cc
+
+.nfs*
+
+run.sh
+submit.sh
+nohup.out
+Makefile
+makefile
