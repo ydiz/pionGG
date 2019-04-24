@@ -1,7 +1,7 @@
 #pragma once
 
-#include "constants_macro.h"
 #include "io.h"
+#include "constants_macro.h"
 
 namespace Grid {
 namespace QCD {

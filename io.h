@@ -2,6 +2,15 @@
 
 #include <Grid/Grid.h>
 
+
+bool dirExists(const std::string &path){
+	struct stat info;
+	if( stat( path.c_str(), &info ) == 0 ) return true; // dir does exist
+	else return false;
+}
+
+
+
 // read pion pion correlator
 std::vector<double> read_pp(const std::string &filename) {
 	std::vector<double> ret;

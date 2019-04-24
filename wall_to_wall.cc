@@ -15,6 +15,8 @@ using namespace std;
 using namespace Grid;
 using namespace Grid::QCD;
 
+// std::string wall_src_path = "/home/ydzhao/cuth/luchang_propagators/32D_wall_src/results=1000/huge-data/wall_src_propagator";
+
 int get_t(const std::string &path) {
 	return std::stoi(path.substr(path.find("=") + 1));
 }
@@ -76,47 +78,63 @@ int main(int argc, char* argv[])
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor); 
 	LatticePropagator prop(grid);
 
-  std::vector<int> ts;
-  std::map<int, std::string> subdirs;
-  std::string wall_src_path = wall_path_32D_sloppy(1000);
-  // std::string wall_src_path = "/home/ydzhao/cuth/luchang_propagators/32D_wall_src/results=1000/huge-data/wall_src_propagator";
-  get_ts(wall_src_path, ts, subdirs);
 
-	std::vector<double> corr(gcoor[3], 0.);
+	int traj_start = 680, traj_num = 70;
+	std::vector<int> trajs(traj_num);
+	for(int i=0; i<trajs.size(); ++i) trajs[i] = traj_start + i * 10;
 
-  for(const auto &t: ts) {
-	  cout << "t of wall src: " << t << endl;
-	  cout << "directory name: " << subdirs[t] << endl;
+	cout << "trajs: " << endl;
+	cout << trajs << endl;
 
-	  assert(dirExists(subdirs[t]));
-		assert(read_mpi_coor(subdirs[t]) == mpi_coor);
+	std::vector<double> average_corr(gcoor[3], 0.);
 
-	  std::cout << "Start reading propagator!" << std::endl;
-		qlat::Propagator4d qlat_prop;
-	  // dist_read_field(qlat_prop, subdirs[t]);
-	  dist_read_field_double_from_float(qlat_prop, subdirs[t]);
-	  std::cout << "Finished reading propagator!" << std::endl;
-	  // std::vector<int> coor{1,13,23,47};
-	  // print_qlat_field_site(qlat_prop, coor);
+	for(int traj: trajs) {
 
-	  // grid_convert(prop, qlat_prop);
-		// // print_grid_field_site(prop, coor);
-    //
-	  // std::vector<typename LatticePropagator::vector_object::scalar_object> slice_sum;
-		// sliceSum(prop, slice_sum, Tdir);
-    //
-		// for(int i=0; i<slice_sum.size(); ++i) {
-		// 	int sep = (i < t) ? i - t + gcoor[3] : i - t;
-		// 	double tmp = TensorRemove(trace(slice_sum[i] * adj(slice_sum[i]))).real();
-		// 	corr[sep] += tmp;
-		// }
+		std::vector<int> ts;
+		std::map<int, std::string> subdirs;
+		std::string wall_src_path = wall_path_32D_sloppy(traj);
+		get_ts(wall_src_path, ts, subdirs);
 
+		std::vector<double> corr(gcoor[3], 0.);
+
+		for(const auto &t: ts) {
+			// cout << "t of wall src: " << t << endl;
+			// cout << "directory name: " << subdirs[t] << endl;
+
+			assert(dirExists(subdirs[t]));
+			assert(read_mpi_coor(subdirs[t]) == mpi_coor);
+
+			qlat::Propagator4d qlat_prop;
+			dist_read_field_double_from_float(qlat_prop, subdirs[t]);
+			// std::cout << "Finished reading propagator!" << std::endl;
+			// std::vector<int> coor{1,13,23,47};
+			// print_qlat_field_site(qlat_prop, coor);
+
+			grid_convert(prop, qlat_prop);
+			// print_grid_field_site(prop, coor);
+
+			std::vector<typename LatticePropagator::vector_object::scalar_object> slice_sum;
+			sliceSum(prop, slice_sum, Tdir);
+
+			for(int i=0; i<slice_sum.size(); ++i) {
+				int sep = (i < t) ? i - t + gcoor[3] : i - t;
+				double tmp = TensorRemove(trace(slice_sum[i] * adj(slice_sum[i]))).real();
+				corr[sep] += tmp;
+			}
+
+		}
+
+		for(auto &x: corr) x /= gcoor[3];
+		cout << "Wall to Wall Correlator[traj=" << traj << "]:"<< endl;
+		cout << corr << endl;
+
+		for(int i=0; i<corr.size(); ++i) average_corr[i] += corr[i];
 	}
 
-	// for(auto &x: corr) {
-	// 	x /= gcoor[3];
-	// 	cout << x << endl;
-	// }
+	for(auto &x: average_corr) x /= trajs.size();
+	cout << std::string('*', 30) << endl;
+	cout << "average wall to wall correlator over "<< trajs.size() << " trajectoies:" << endl;
+	cout << average_corr << endl;
 
   end();
 

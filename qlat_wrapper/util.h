@@ -5,6 +5,8 @@
 #include <vector>
 #include <fstream>
 #include <assert.h>
+
+#include <qlat/grid.h>
 #include "../pGG.h"
 
 
@@ -24,13 +26,6 @@ std::vector<int> read_mpi_coor(const std::string &prefix) {
 	f.close();
 	return mpi_coor;
 }
-
-bool dirExists(const std::string &path){
-	struct stat info;
-	if( stat( path.c_str(), &info ) == 0 ) return true; // dir does exist
-	else return false;
-}
-
 
 
 template <class T>

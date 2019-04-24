@@ -31,3 +31,5 @@ makefile
 *.output
 !qlat_wrapper
 !qlat_wrapper/*
+
+cuth_calculate_avg.cc
