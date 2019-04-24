@@ -29,4 +29,5 @@ makefile
 *.cobaltlog
 *.error
 *.output
+!qlat_wrapper
 !qlat_wrapper/*
