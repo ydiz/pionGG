@@ -123,8 +123,8 @@ int main(int argc, char* argv[])
 	// LatticePGG avg(grid);
 	// avg = 0.;
 
-	std::string filename_0 = "/home/ydzhao/cuth/cuba_integration/results/p30e10-5Cuhre/data.txt"; // integral without p in the numerator
-	std::string filename_p3 = "/home/ydzhao/cuth/cuba_integration/results/p30e10-5Cuhre_with_p3/data.txt"; // integral with p3 in the numerator
+	std::string filename_0 = "/home/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre/data.txt"; // integral without p in the numerator
+	std::string filename_p3 = "/home/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre_with_p3/data.txt"; // integral with p3 in the numerator
 
 	LatticePGG ret(grid);
 	// LatticeComplex ret(grid);

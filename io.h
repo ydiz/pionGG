@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Grid/Grid.h>
 
 // read pion pion correlator

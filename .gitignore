@@ -25,3 +25,8 @@ submit.sh
 nohup.out
 Makefile
 makefile
+
+*.cobaltlog
+*.error
+*.output
+!qlat_wrapper/*
