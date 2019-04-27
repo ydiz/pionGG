@@ -69,6 +69,31 @@ void grid_convert(Grid::QCD::LatticePGG& grid_pgg, const qlat::PionGGElemField& 
   }
 }
 
+void grid_convert(Grid::QCD::LatticeColourMatrix& grid_gt, const qlat::GaugeTransform& qlat_gt)
+{
+  using namespace Grid;
+  using namespace Grid::QCD;
+  const qlat::Geometry& geo = qlat_gt.geo;
+#pragma omp parallel for
+  for (long index = 0; index < geo.local_volume(); ++index) {
+    const qlat::Coordinate xl = geo.coordinate_from_index(index); // get  local coordinate
+    std::vector<int> coor = grid_convert(xl); // just copy the four components of xl to a vector<int>
+    auto ms = qlat_gt.get_elems_const(xl); // ms is a vector of WilsonMatrix; vector size is 1
+		// qlat::WilsonMatrix qlat_prop_site = ms[0];
+		auto qlat_gt_site = ms[0];
+		assert(ms.size()==1);
+		
+		typename LatticeColourMatrix::vector_object::scalar_object grid_gt_site;
+		assert(sizeof(qlat_gt_site) == sizeof(grid_gt_site));
+
+		Complex *p_qlat = (Complex *)&qlat_gt_site; // T is either ComplexF or ComplexD
+	
+		std::copy(p_qlat, p_qlat + 9, (Complex *)&grid_gt_site);	
+
+    pokeLocalSite(grid_gt_site, grid_gt, coor);
+  }
+}
+
 template<class T> // T can be ComplexF or ComplexD
 typename std::enable_if<std::is_same<T, Grid::ComplexF>::value || std::is_same<T, Grid::ComplexD>::value, void>::type 
 grid_convert(Grid::Lattice<Grid::QCD::iSpinColourMatrix<typename TypeMap<T>::type >>& grid_prop, const qlat::Propagator4dT<T>& qlat_prop)
@@ -152,3 +177,14 @@ void print_field(const T &field) {
 				}
 			}
 }
+
+namespace Grid {
+namespace QCD {
+
+void read_propagator(LatticePropagator &lat, const std::string &path) {
+	qlat::Propagator4d qlat_prop;
+	dist_read_field_double_from_float(qlat_prop, path);
+	grid_convert(lat, qlat_prop);
+}
+
+}}
