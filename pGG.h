@@ -31,7 +31,7 @@ void print_grid_field_site(const T &field, const std::vector<int> coor) {
 	std::cout << site << std::endl;
 }
 
-// get 1 / sqrt( exp(Mpi t) <pi(0) pi(t)> ) for t in [0, T/2 - 10)
+// get  exp(- 2 Mpi t) / sqrt( exp(Mpi t) <pi(0) pi(t)> ) for t in [0, T/2 - 10)
 void get_pp(LatticeComplex &lat, const std::string &filename, int tmin=10) {
 
 	int Tsize =  lat._grid->_fdimensions[Tdir];
@@ -54,6 +54,7 @@ void get_pp(LatticeComplex &lat, const std::string &filename, int tmin=10) {
 		if(xt <= TIME_LIMIT && xt >= -TIME_LIMIT) {
 			int pion_t = (xt<=0) ? tmin : xt + tmin;
 			val = 1. / std::sqrt(std::exp( 0.135 * pion_t) * pps[pion_t]); // pps[t];
+			val *= std::exp( - 2 * 0.135 * pion_t); // pps[t];
 		}
 		else val = 0. ;
 		
