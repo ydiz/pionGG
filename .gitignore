@@ -20,6 +20,7 @@ Test*.cc
 
 .nfs*
 
+.tags
 run.sh
 submit.sh
 nohup.out
