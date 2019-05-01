@@ -194,9 +194,9 @@ int main(int argc, char* argv[])
 				ret_site = 0.;
 				for(int mu=0; mu<4; ++mu)
 					for(int nu=0; nu<4; ++nu) {
+						ret_site()()(mu, nu) = trace(Gamma::gmu[mu] * xp_to_x * Gamma::gmu[nu] * wall_to_xp * gamma5 * x_to_wall); // cheng's order
 						// ret_site()()(mu, nu) = trace(Gamma::gmu[mu] * xp_to_x * Gamma::gmu[nu] * wall_to_xp * gamma5 * x_to_wall) + trace(Gamma::gmu[nu] * x_to_xp * Gamma::gmu[mu] * wall_to_x * gamma5 * xp_to_wall); // cheng's order
-						ret_site()()(mu, nu) = trace(gamma5 * wall_to_xp * Gamma::gmu[nu] * xp_to_x * Gamma::gmu[mu] * x_to_wall) + trace(gamma5 * wall_to_x * Gamma::gmu[mu] * x_to_xp * Gamma::gmu[nu] * xp_to_wall); // my order // The second term is actually the hermitian conjugate
-						// ret_site()()(mu, nu) = trace(gamma5 * wall_to_xp * Gamma::gmu[nu] * xp_to_x * Gamma::gmu[mu] * x_to_wall);
+						// ret_site()()(mu, nu) = trace(gamma5 * wall_to_xp * Gamma::gmu[nu] * xp_to_x * Gamma::gmu[mu] * x_to_wall) + trace(gamma5 * wall_to_x * Gamma::gmu[mu] * x_to_xp * Gamma::gmu[nu] * xp_to_wall); // wrong order
 				}
 
 				ret_site = ret_site * (1 /  std::exp(- 0.139472 * t_sep));
@@ -207,6 +207,9 @@ int main(int argc, char* argv[])
 			}
 
 			for(int mu=0; mu<4; ++mu) ret = Cshift(ret, mu, xg[mu]);
+
+      ret = real(ret);
+      ret = 2.0 * ret; // two diagrams: clockwise and anti-clockwise; they are conjugate to each other.
 
 			cout << ret << endl;
 		} // end of xg loop

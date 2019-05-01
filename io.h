@@ -22,10 +22,15 @@ std::vector<double> read_pp(const std::string &filename) {
 		if(f.eof()) break;
 		ret.push_back(tmp);
 
-		f >> tmp;
-		if(f.peek() == ',') f.ignore();
+		// f >> tmp; // ignore imaginary part
+		// if(f.peek() == ',') f.ignore();
 	}
 	f.close();
+
+  std::cout << "reading pion pion correlator" << std::endl;
+  for(double x: ret) std::cout << x << "\t"; std::cout << std::endl; 
+  assert(ret.size()==64);
+
 	return ret;
 }
 

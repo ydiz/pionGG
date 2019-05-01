@@ -53,8 +53,8 @@ void get_pp(LatticeComplex &lat, const std::string &filename, int tmin=10) {
 		double val;
 		if(xt <= TIME_LIMIT && xt >= -TIME_LIMIT) {
 			int pion_t = (xt<=0) ? tmin : xt + tmin;
-			val = 1. / std::sqrt(std::exp( 0.135 * pion_t) * pps[pion_t]); // pps[t];
-			val *= std::exp( - 2 * 0.135 * pion_t); // pps[t];
+			val = 1. / std::sqrt(std::exp( 0.135 * pion_t) * pps[pion_t]);
+			val *= std::exp( - 2 * 0.135 * pion_t); // FIXME: cheng's t_sep is strange
 		}
 		else val = 0. ;
 		
