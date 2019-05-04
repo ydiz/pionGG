@@ -15,11 +15,9 @@ double mult_hadronic_leptonic(const LatticePGG &hadronic, const LatticePGG &lept
 	LatticeComplex tmp(hadronic._grid);
 	parallel_for(int ss=0; ss<hadronic._grid->oSites(); ++ss){
 		// tmp[ss]()()() = 2. * ( hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(2, 2) * leptonic[ss]()()(2, 3) ) ; 
-		tmp[ss]()()() = 2. * hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1); 
+		// tmp[ss]()()() = 2. * hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1); 
+		tmp[ss]()()() = hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(1, 0) * leptonic[ss]()()(1, 0); 
 	}
-
-  tmp = abs(tmp);
-  // std::cout<< tmp << std::endl;
 
 	Complex ret = TensorRemove(sum(tmp));
 	return ret.real();
@@ -30,7 +28,8 @@ double mult_hadronic_leptonic_print(const LatticePGG &hadronic, const LatticePGG
 	LatticeComplex tmp(hadronic._grid);
 	parallel_for(int ss=0; ss<hadronic._grid->oSites(); ++ss){
 		// tmp[ss]()()() = 2. * ( hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(2, 2) * leptonic[ss]()()(2, 3) ) ; 
-		tmp[ss]()()() = 2. * hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1); 
+		// tmp[ss]()()() = 2. * hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1); 
+		tmp[ss]()()() = hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(1, 0) * leptonic[ss]()()(1, 0); 
 	}
 
   std::cout<< tmp << std::endl;
@@ -67,12 +66,12 @@ int main(int argc, char* argv[])
 	cout << "Multiplication of hadronic and leptonic part: " << ret << endl;
 
 	double me = 511000;
-	double amplitude_M = 1./ (3 * std::sqrt(2))  / (2 * M_PI) / 137 / 137 * me * ret; 
-	cout << "Amplitude M = " << amplitude_M << "eV" <<  endl;
+	double amplitude_M = 1./ (3 * std::sqrt(2))  / (2 * M_PI) / 137. / 137. * me * ret; 
+	cout << "Amplitude(for one polarization)  M = " << amplitude_M << "eV" <<  endl;
 
 	double Mpi = 135000000;
 	double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi));
-	double Gamma = beta / (16 * M_PI * Mpi) * amplitude_M * amplitude_M;
+	double Gamma = 2.0 * beta / (16 * M_PI * Mpi) * amplitude_M * amplitude_M; // the first factor 2.0 comes from adding two possible polarizations
 	cout << "Decay rate Gamma = " << Gamma << "eV" << endl;
 
 	double Gamma_photons = 7.75;

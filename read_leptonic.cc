@@ -90,15 +90,16 @@ void get_leptonic(const std::string &filename_p3, LatticePGG &lat, int space_lim
 		m = 0.;
 		m()()(0, 1) = Complex(val_p3, 0); 
 		m()()(1, 0) = - m()()(0, 1);
+
+    if(gcoor[2]==0) m = 0.; // if z coordinate is 0
 		
-		if(gcoor[Tdir]==0) m = 0.; // FIXME: when t=0, the matrix element's sign is very strange
-		if( (gcoor[0] > 8 &&gcoor[0] <24) || (gcoor[1] > 8 &&gcoor[1] <24) || (gcoor[2] > 8 &&gcoor[2] <24)|| (gcoor[3] > 8 &&gcoor[3] <56)) m = 0.; // FIXME: when t=0, the matrix element's sign is very strange
+		// if( (gcoor[0] > 8 &&gcoor[0] <24) || (gcoor[1] > 8 &&gcoor[1] <24) || (gcoor[2] > 8 &&gcoor[2] <24)|| (gcoor[3] > 8 &&gcoor[3] <56)) m = 0.; // FIXME: when t=0, the matrix element's sign is very strange
     
 		pokeLocalSite(m, lat, lcoor);
 	}
 
 	writeScidac(lat, "./lat_config/lat_leptonic");
-	// std::cout << lat << std::endl;
+	std::cout << lat << std::endl;
 }
 
 }}
