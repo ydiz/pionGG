@@ -50,6 +50,7 @@ void read_integrals(const std::string &filename, int space_limit, int time_limit
 
 	std::ifstream f(filename);
 	
+	std::cout << "before loop " << filename << std::endl;
 	for(int i=0; i<shape[0]; ++i)
 		for(int j=0; j<shape[1]; ++j)
 			for(int k=0; k<shape[2]; ++k) {
@@ -97,13 +98,15 @@ void get_leptonic(const std::string &filename_0, const std::string &filename_p3,
 		m()()(1, 0) = - m()()(0, 1);
 		m()()(3, 2) = - m()()(2, 3);
 		
-		if(gcoor[Tdir] > lat._grid->_fdimensions[Tdir] / 2) m = -m; // FIXME: make sure this is right; when w-> -w, leptonic indeed becomes negative
-
+		// if(gcoor[Tdir] > lat._grid->_fdimensions[Tdir] / 2) m = -m; // wrong; never use this
+		if(gcoor[Tdir]==0) m = 0.; // FIXME: when t=0, the matrix element's sign is very strange
+		if( (gcoor[0] > 8 &&gcoor[0] <24) || (gcoor[1] > 8 &&gcoor[1] <24) || (gcoor[2] > 8 &&gcoor[2] <24)|| (gcoor[3] > 8 &&gcoor[3] <56)) m = 0.; // FIXME: when t=0, the matrix element's sign is very strange
+    
 		pokeLocalSite(m, lat, lcoor);
 	}
 
-	writeScidac(lat, "lat_leptonic");
-	std::cout << lat << std::endl;
+	writeScidac(lat, "./lat_config/lat_leptonic");
+	// std::cout << lat << std::endl;
 }
 
 }}
@@ -120,14 +123,14 @@ int main(int argc, char* argv[])
   Grid_init(&argc, &argv);
 
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), GridDefaultMpi());
-	// LatticePGG avg(grid);
-	// avg = 0.;
 
-	std::string filename_0 = "/home/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre/data.txt"; // integral without p in the numerator
-	std::string filename_p3 = "/home/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre_with_p3/data.txt"; // integral with p3 in the numerator
+
+	// std::string filename_0 = "/home/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre/data.txt"; // integral without p in the numerator
+	// std::string filename_p3 = "/home/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre_with_p3/data.txt"; // integral with p3 in the numerator
+	std::string filename_0 = "/home/ydzhao/cuth/cuba_integration/results/p30e10-5Cuhre/data.txt"; // integral without p in the numerator
+	std::string filename_p3 = "/home/ydzhao/cuth/cuba_integration/results/p30e10-5Cuhre_with_p3/data.txt"; // integral with p3 in the numerator
 
 	LatticePGG ret(grid);
-	// LatticeComplex ret(grid);
 
 	// int space_limit = 8, time_limit = 16;// x,y,z [-space_limit, space_limit]; t [0, time_limit]
 	int space_limit = SPACE_LIMIT, time_limit = TIME_LIMIT;// x,y,z [-space_limit, space_limit]; t [0, time_limit]

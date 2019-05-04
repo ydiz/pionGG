@@ -37,7 +37,7 @@ void get_pp(LatticeComplex &lat, const std::string &filename, int tmin=10) {
 	int Tsize =  lat._grid->_fdimensions[Tdir];
 	
 	std::vector<double> pps = read_pp(filename);
-	assert(pps.size() == Tsize/2);
+	assert(pps.size() == Tsize);
 	
 	parallel_for(int ss=0; ss<lat._grid->lSites(); ss++){
 		std::vector<int> lcoor(4);

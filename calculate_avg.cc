@@ -92,6 +92,9 @@ int main(int argc, char* argv[])
 	// matrix element = e^(-Mpi t) * three point / sqrt( exp(Mpi t) <pi(0) pi(t)> )
 	LatticePGG matrix_element(grid);
 	matrix_element = avg * pp;
+
+  matrix_element = imag(matrix_element); // result is (real, imag) -> (imag, 0)
+
 	writeScidac(matrix_element, "./lat_config/matrix_element");
   cout << matrix_element << endl;
 
