@@ -87,13 +87,11 @@ int main(int argc, char* argv[])
   Grid_init(&argc, &argv);
 
   GridCartesian *grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor); 
-	// LatticePropagator prop(grid);
-
 
 	// int traj_start = 680, traj_num = 70;
 	// std::vector<int> trajs(traj_num);
-	std::vector<int> trajs {1370};
 	// for(int i=0; i<trajs.size(); ++i) trajs[i] = traj_start + i * 10;
+	std::vector<int> trajs {1370};
 
 	cout << "trajs: " << endl;
 	cout << trajs << endl;
@@ -104,20 +102,6 @@ int main(int argc, char* argv[])
 	for(int traj: trajs) {
 
 		std::string gauge_transform_path = gauge_transform_path_32D(traj);
-		cout << "Load Gauge Transform And Get Inv: " <<  gauge_transform_path << endl;
-		assert(dirExists(gauge_transform_path));
-		GaugeTransform qlat_gtinv;
-		{
-			GaugeTransform qlat_gt;
-			dist_read_field(qlat_gt, gauge_transform_path);
-			to_from_big_endian_64(get_data(qlat_gt)); //FIXME: why? try commenting it
-			gt_inverse(qlat_gtinv, qlat_gt);
-		}
-		LatticeColourMatrix gt(grid);
-		grid_convert(gt, qlat_gtinv);
-		std::vector<int> coor{1,13,23,47};
-		print_grid_field_site(gt, coor);
-		// print_qlat_field_site(gtinv, coor);
 
 
 		std::vector<int> ts;
@@ -130,16 +114,26 @@ int main(int argc, char* argv[])
 		std::string point_src_path = point_path_32D(traj);
 		get_xgs(point_src_path, xgs, point_subdirs);
 
-		// std::vector<qlat::Propagator4d> qlat_wall_props(gcoor[Tdir]);
+    // read gauge transformation
+		cout << "Load Gauge Transform And Get Inv: " <<  gauge_transform_path << endl;
+		assert(dirExists(gauge_transform_path));
+		GaugeTransform qlat_gtinv;
+		{
+			GaugeTransform qlat_gt;
+			dist_read_field(qlat_gt, gauge_transform_path);
+			to_from_big_endian_64(get_data(qlat_gt)); 
+			gt_inverse(qlat_gtinv, qlat_gt);
+		}
+		LatticeColourMatrix gt(grid);
+		grid_convert(gt, qlat_gtinv);
+		// std::vector<int> coor{1,13,23,47};
+		// print_grid_field_site(gt, coor);
+
+    // read wall src
 		std::vector<LatticePropagator> wall_props(gcoor[Tdir], grid);
-		// for(int t=0; t<gcoor[Tdir]; ++t) read_propagator(wall_props[t], wall_subdirs[t]);
 		for(int t=0; t<gcoor[Tdir]; ++t) {
 			read_propagator(wall_props[t], wall_subdirs[t]);
 			wall_props[t] = gt * wall_props[t];
-			// qlat::Propagator4d qlat_prop, qlat_prop_gauge;
-			// dist_read_field_double_from_float(qlat_prop, wall_subdirs[t]);
-			// prop_apply_gauge_transformation(qlat_prop_gauge, qlat_prop, gtinv);
-			// grid_convert(wall_props[t], qlat_prop_gauge);
 		}
 		// std::cout << "Finished reading wall propagator!" << std::endl;
 
@@ -152,8 +146,6 @@ int main(int argc, char* argv[])
 			cout << "xg of point src: " << xg << endl;
 			cout << "directory name: " << point_subdirs[xg] << endl;
 
-			// qlat::Propagator4d qlat_point_prop;
-			// dist_read_field_double_from_float(qlat_point_prop, point_subdirs[xg]);
 			LatticePropagator point_prop(grid);
 			read_propagator(point_prop, point_subdirs[xg]);
 			std::cout << "Finished reading point propagator!" << std::endl;
@@ -168,18 +160,34 @@ int main(int argc, char* argv[])
 				ret._grid->ProcessorCoorFromRank(ret._grid->ThisRank(), processor_coor);
 				ret._grid->ProcessorCoorLocalCoorToGlobalCoor(processor_coor, lcoor, gcoor);
 				//std::cout << processor_coor << lcoor << gcoor << std::endl;
+
 				std::vector<int> xp = gcoor;
 				std::vector<int> x = xg;
-				int t_wall, t_sep, t_min=10;
-				int t_wall_pend = mod(x[3] + t_min, 64);
-				if (mod(t_wall_pend - xp[3], 64) < t_min)
-				{
-					t_wall = mod(xp[3] + t_min, 64);
-					t_sep = mod(t_wall - x[3], 64);
-				} else {
-					t_wall = t_wall_pend;
-					t_sep = t_min;
-				}
+
+        // cheng's tsep
+				// int t_wall, t_sep, t_min=10;
+				// int t_wall_pend = mod(x[3] + t_min, 64);
+				// if (mod(t_wall_pend - xp[3], 64) < t_min)
+				// {
+				// 	t_wall = mod(xp[3] + t_min, 64);
+				// 	t_sep = mod(t_wall - x[3], 64);
+				// } else {
+				// 	t_wall = t_wall_pend;
+				// 	t_sep = t_min;
+				// }
+        int t_min = 10;
+        int t_wall;
+        int t_sep;
+      
+        // using namespace qlat;
+        int diff = smod(x[3] - xp[3], 64);
+        if (diff >= 0)
+        {
+          t_wall = qlat::mod(x[3] + t_min, 64);
+        } else {
+          t_wall = qlat::mod(xp[3] + t_min, 64);
+        }
+        t_sep = qlat::mod(t_wall - x[3], 64);
 
 				typename LatticePropagator::vector_object::scalar_object wall_to_x, x_to_wall, wall_to_xp, xp_to_wall, x_to_xp, xp_to_x;
 				typename LatticePGG::vector_object::scalar_object ret_site;
@@ -196,11 +204,9 @@ int main(int argc, char* argv[])
 					for(int nu=0; nu<4; ++nu) {
 						ret_site()()(mu, nu) = trace(Gamma::gmu[mu] * xp_to_x * Gamma::gmu[nu] * wall_to_xp * gamma5 * x_to_wall); // cheng's order
 						// ret_site()()(mu, nu) = trace(Gamma::gmu[mu] * xp_to_x * Gamma::gmu[nu] * wall_to_xp * gamma5 * x_to_wall) + trace(Gamma::gmu[nu] * x_to_xp * Gamma::gmu[mu] * wall_to_x * gamma5 * xp_to_wall); // cheng's order
-						// ret_site()()(mu, nu) = trace(gamma5 * wall_to_xp * Gamma::gmu[nu] * xp_to_x * Gamma::gmu[mu] * x_to_wall) + trace(gamma5 * wall_to_x * Gamma::gmu[mu] * x_to_xp * Gamma::gmu[nu] * xp_to_wall); // wrong order
 				}
 
-				ret_site = ret_site * (1 /  std::exp(- 0.139472 * t_sep));
-				// ret_site = ret_site * (1 /  std::exp(- 0.135 * t_sep));
+				ret_site = ret_site * (1 /  std::exp(- M_PION * t_sep));
 
 				pokeLocalSite(ret_site, ret, lcoor);
 
@@ -211,6 +217,7 @@ int main(int argc, char* argv[])
       ret = real(ret);
       ret = 2.0 * ret; // two diagrams: clockwise and anti-clockwise; they are conjugate to each other.
 
+      writeScidac(ret, "xg=(0,4,2,6)");
 			cout << ret << endl;
 		} // end of xg loop
 

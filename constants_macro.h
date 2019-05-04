@@ -4,6 +4,8 @@
 #define SPACE_LIMIT 16
 // #define SPACE_LIMIT 8
 
+#define M_PION 0.139474 
+
 // const std::string SLOPPY_WALL_PATH = "";
 
 std::string gauge_transform_path_32D(int traj) {
