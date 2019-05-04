@@ -1,5 +1,6 @@
 #pragma once
 
+#include <qlat/qlat.h>
 #include "io.h"
 #include "constants_macro.h"
 

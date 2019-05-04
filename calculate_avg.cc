@@ -1,6 +1,5 @@
 #include <Grid/Grid.h>
 #include <qlat/qlat.h>
-// #include <qlat/grid.h>
 #include <dirent.h>
 #include "io.h"
 #include "pGG.h"
