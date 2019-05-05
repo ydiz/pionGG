@@ -192,7 +192,7 @@ int main(int argc, char* argv[])
 				typename LatticePropagator::vector_object::scalar_object wall_to_x, x_to_wall, wall_to_xp, xp_to_wall, x_to_xp, xp_to_x;
 				typename LatticePGG::vector_object::scalar_object ret_site;
 
-				peekLocalSite(wall_to_x, wall_props[t_wall], x);
+				peekSite(wall_to_x, wall_props[t_wall], x); //global, not local
 				x_to_wall = gamma5 * adj(wall_to_x) * gamma5;
 				peekLocalSite(wall_to_xp, wall_props[t_wall], lcoor);
 				xp_to_wall = gamma5 * adj(wall_to_xp) * gamma5;

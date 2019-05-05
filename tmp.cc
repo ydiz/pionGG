@@ -20,20 +20,20 @@ int main(int argc, char* argv[])
   Grid_init(&argc, &argv);
 
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
-	// // cout << hadronic << endl;
-  // LatticePGG pgg(grid);
-	// string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/sloppy/results=1370/t-min=0010/xg=(0,4,2,6) ; type=0 ; accuracy=0";
-  // qlat::PionGGElemField qlat_pgg;
-  // dist_read_field(qlat_pgg, path);
-  // cout << "Finished reading" << endl;
-  // grid_convert(pgg, qlat_pgg);
-  //
-  // cout << pgg << endl;
+	// cout << hadronic << endl;
+  LatticePGG pgg(grid);
+	string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/sloppy/results=1370/t-min=0010/xg=(0,4,2,6) ; type=0 ; accuracy=0";
+  qlat::PionGGElemField qlat_pgg;
+  dist_read_field(qlat_pgg, path);
+  cout << "Finished reading" << endl;
+  grid_convert(pgg, qlat_pgg);
 
-	LatticePGG leptonic(grid);
-	std::string leptonic_file = "./lat_config/lat_leptonic";
-	readScidac(leptonic, leptonic_file);
-  cout << leptonic << endl;
+  cout << pgg << endl;
+
+	// LatticePGG leptonic(grid);
+	// std::string leptonic_file = "./lat_config/lat_leptonic";
+	// readScidac(leptonic, leptonic_file);
+  // cout << leptonic << endl;
 
 	Grid_finalize();
   return 0;
