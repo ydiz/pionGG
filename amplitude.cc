@@ -19,6 +19,8 @@ double mult_hadronic_leptonic(const LatticePGG &hadronic, const LatticePGG &lept
 		tmp[ss]()()() = hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(1, 0) * leptonic[ss]()()(1, 0); 
 	}
 
+  tmp = abs(tmp);
+
 	Complex ret = TensorRemove(sum(tmp));
 	return ret.real();
 }
@@ -31,7 +33,8 @@ double mult_hadronic_leptonic_print(const LatticePGG &hadronic, const LatticePGG
 		// tmp[ss]()()() = 2. * hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1); 
 		tmp[ss]()()() = hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(1, 0) * leptonic[ss]()()(1, 0); 
 	}
-
+  
+  tmp = abs(tmp);
   std::cout<< tmp << std::endl;
 
 	Complex ret = TensorRemove(sum(tmp));

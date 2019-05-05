@@ -64,9 +64,9 @@ void get_pp(LatticeComplex &lat, const std::string &filename, int tmin=10) {
 		if(xt <= TIME_LIMIT && xt >= -TIME_LIMIT) {
 			int pion_t = (xt<=0) ? tmin : xt + tmin;
       assert(pion_t == t_wall); // FIXME: delete me
-			val = 1. / std::sqrt(std::exp( M_PION * pion_t) * pps[pion_t]);
-			val *= std::exp( - M_PION * pion_t); 
-			val *= std::exp( - M_PION * t_sep); // FIXME: cheng's t_sep is strange
+			val = 1. / std::sqrt(std::exp( - M_PION * pion_t) * pps[pion_t]); //FIXME: do I need to change this sign of pion_t?
+			// val *= std::exp( - M_PION * pion_t); 
+			// val *= std::exp( - M_PION * t_sep); // FIXME: cheng's t_sep is strange
 		}
 		else val = 0. ;
 		

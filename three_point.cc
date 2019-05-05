@@ -103,7 +103,6 @@ int main(int argc, char* argv[])
 
 		std::string gauge_transform_path = gauge_transform_path_32D(traj);
 
-
 		std::vector<int> ts;
 		std::map<int, std::string> wall_subdirs;
 		std::string wall_src_path = wall_path_32D_sloppy(traj);
@@ -149,7 +148,12 @@ int main(int argc, char* argv[])
 			LatticePropagator point_prop(grid);
 			read_propagator(point_prop, point_subdirs[xg]);
 			std::cout << "Finished reading point propagator!" << std::endl;
-	
+
+      // !! global peekSite, not local peekLocalSite
+      // !! cannot use global peekSite inside parallel_for; every node must peek the same site
+      std::vector<typename LatticePropagator::vector_object::scalar_object> wall_props_to_xg(gcoor[Tdir]);
+      for(int i=0; i<gcoor[Tdir]; ++i)	peekSite(wall_props_to_xg[i], wall_props[i], xg); 
+
 			LatticePGG ret(grid);
 			parallel_for(int ss=0; ss<ret._grid->lSites(); ss++){
 				std::vector<int> lcoor(4);
@@ -165,16 +169,7 @@ int main(int argc, char* argv[])
 				std::vector<int> x = xg;
 
         // cheng's tsep
-				// int t_wall, t_sep, t_min=10;
-				// int t_wall_pend = mod(x[3] + t_min, 64);
-				// if (mod(t_wall_pend - xp[3], 64) < t_min)
-				// {
-				// 	t_wall = mod(xp[3] + t_min, 64);
-				// 	t_sep = mod(t_wall - x[3], 64);
-				// } else {
-				// 	t_wall = t_wall_pend;
-				// 	t_sep = t_min;
-				// }
+
         int t_min = 10;
         int t_wall;
         int t_sep;
@@ -192,7 +187,8 @@ int main(int argc, char* argv[])
 				typename LatticePropagator::vector_object::scalar_object wall_to_x, x_to_wall, wall_to_xp, xp_to_wall, x_to_xp, xp_to_x;
 				typename LatticePGG::vector_object::scalar_object ret_site;
 
-				peekSite(wall_to_x, wall_props[t_wall], x); //global, not local
+				// peekSite(wall_to_x, wall_props[t_wall], x); //global, not local
+        wall_to_x = wall_props_to_xg[t_wall];
 				x_to_wall = gamma5 * adj(wall_to_x) * gamma5;
 				peekLocalSite(wall_to_xp, wall_props[t_wall], lcoor);
 				xp_to_wall = gamma5 * adj(wall_to_xp) * gamma5;
