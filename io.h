@@ -75,28 +75,28 @@ void get_ts(const std::string &path, std::vector<int> &ts, std::map<int, std::st
 
 
 
-// read pion pion correlator
-std::vector<double> read_pp(const std::string &filename) {
-	std::vector<double> ret;
-	std::ifstream f(filename);
-
-	double tmp;
-	while(f) {
-		f >> tmp;
-		if(f.eof()) break;
-		ret.push_back(tmp);
-
-		// f >> tmp; // ignore imaginary part
-		// if(f.peek() == ',') f.ignore();
-	}
-	f.close();
-
-  std::cout << "reading pion pion correlator" << std::endl;
-  for(double x: ret) std::cout << x << "\t"; std::cout << std::endl; 
-  assert(ret.size()==64);
-
-	return ret;
-}
+// // read pion pion correlator
+// std::vector<double> read_pp(const std::string &filename) {
+// 	std::vector<double> ret;
+// 	std::ifstream f(filename);
+//
+// 	double tmp;
+// 	while(f) {
+// 		f >> tmp;
+// 		if(f.eof()) break;
+// 		ret.push_back(tmp);
+//
+// 		// f >> tmp; // ignore imaginary part
+// 		// if(f.peek() == ',') f.ignore();
+// 	}
+// 	f.close();
+//
+//   std::cout << "reading pion pion correlator" << std::endl;
+//   for(double x: ret) std::cout << x << "\t"; std::cout << std::endl; 
+//   assert(ret.size()==64);
+//
+// 	return ret;
+// }
 
 namespace Grid {
 

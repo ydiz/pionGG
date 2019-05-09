@@ -23,7 +23,8 @@ void print_grid_field_site(const T &field, const std::vector<int> coor) {
 	std::cout << site << std::endl;
 }
 
-void get_pp(LatticeComplex &lat, const std::string &filename, int tmin=10) {
+// translational factor
+void get_pp(LatticeComplex &lat) {
 
 	parallel_for(int ss=0; ss<lat._grid->lSites(); ss++){
     std::vector<int> lcoor, gcoor;
@@ -31,7 +32,6 @@ void get_pp(LatticeComplex &lat, const std::string &filename, int tmin=10) {
 
 		double val;
 			// val = 1. / std::sqrt(std::exp( - M_PION * pion_t) * pps[pion_t]); //FIXME: do I need to change this sign of pion_t?
-    // val = 1. 
 		int xt = qlat::smod(gcoor[Tdir], lat._grid->_fdimensions[Tdir]);
     val = std::exp( 0.5 * M_PION * xt); // translation factor
 

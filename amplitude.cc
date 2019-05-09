@@ -58,7 +58,7 @@ double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &lep
 
 	LatticePGG hadronic(three_point._grid);
 	LatticeComplex pp(three_point._grid); 
-	get_pp(pp, "my_wall_wall.txt");
+	get_pp(pp);// translational factor  //, "my_wall_wall.txt");
 	hadronic = three_point * pp;
   hadronic = imag(hadronic); 
 
