@@ -181,10 +181,17 @@ void print_field(const T &field) {
 namespace Grid {
 namespace QCD {
 
-void read_propagator(LatticePropagator &lat, const std::string &path) {
+void read_qlat_propagator(LatticePropagator &lat, const std::string &path) {
 	qlat::Propagator4d qlat_prop;
 	dist_read_field_double_from_float(qlat_prop, path);
 	grid_convert(lat, qlat_prop);
+}
+
+void read_cheng_PGG(LatticePGG &lat, const std::string &path) {
+  qlat::PionGGElemField qlat_pgg;
+  dist_read_field(qlat_pgg, path);
+  grid_convert(lat, qlat_pgg);
+
 }
 
 }}

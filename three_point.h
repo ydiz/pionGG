@@ -37,7 +37,7 @@ void read_wall_src_props(const std::string &wall_src_path, const std::string &ga
 
   std::cout << "reading wall source propagators and applying gauge transformations" << std::endl;
   for(int t=0; t<wall_props[0]._grid->_fdimensions[Tdir]; ++t) {
-    read_propagator(wall_props[t], wall_subdirs[t]);
+    read_qlat_propagator(wall_props[t], wall_subdirs[t]);
     wall_props[t] = gt * wall_props[t];
   }
 }
@@ -66,7 +66,7 @@ LatticePGG three_point_contraction(const std::vector<LatticePropagator> &wall_pr
     int t_min = 10;
     int t_wall;
     int t_sep;
-    // using namespace qlat;
+
     int diff = qlat::smod(x[3] - xp[3], 64);
     if (diff >= 0)
     {
