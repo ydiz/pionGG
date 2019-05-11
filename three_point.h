@@ -63,18 +63,25 @@ LatticePGG three_point_contraction(const std::vector<LatticePropagator> &wall_pr
     std::vector<int> x = xg;
 
     // cheng's tsep
+    int Tsize = ret._grid->_fdimensions[Tdir];
     int t_min = 10;
-    int t_wall;
-    int t_sep;
+    // int t_wall = (rightPoint(x[3], xp[3], Tsize) + t_min) % Tsize; // if wall is on the right side of currents
+    int t_wall = leftPoint(x[3], xp[3], Tsize) - t_min; 
+    if(t_wall < 0) t_wall += Tsize; // if wall is on the left side of the current
+    int t_sep = distance(x[3], t_wall, Tsize);
 
-    int diff = qlat::smod(x[3] - xp[3], 64);
-    if (diff >= 0)
-    {
-      t_wall = qlat::mod(x[3] + t_min, 64);
-    } else {
-      t_wall = qlat::mod(xp[3] + t_min, 64);
-    }
-    t_sep = qlat::mod(t_wall - x[3], 64);
+    // cheng's way
+    // int t_wall;
+    // int t_sep;
+    //
+    // int diff = qlat::smod(x[3] - xp[3], 64);
+    // if (diff >= 0)
+    // {
+    //   t_wall = qlat::mod(x[3] + t_min, 64);
+    // } else {
+    //   t_wall = qlat::mod(xp[3] + t_min, 64);
+    // }
+    // t_sep = qlat::mod(t_wall - x[3], 64);
 
     typename LatticePropagator::vector_object::scalar_object wall_to_x, x_to_wall, wall_to_xp, xp_to_wall, x_to_xp, xp_to_x;
     typename LatticePGG::vector_object::scalar_object ret_site;

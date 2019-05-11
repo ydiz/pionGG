@@ -53,14 +53,16 @@ int main(int argc, char* argv[])
       ret = real(ret);
       ret = 2.0 * ret; // two diagrams: clockwise and anti-clockwise; they are conjugate to each other.
 
-      // writeScidac(ret, "xg=(0,4,2,6)");
       LatticePGG cheng_pgg(grid);
-      std::string cheng_path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/sloppy/twall>>t/results=1370/t-min=0010/xg=(0,4,2,6) ; type=0 ; accuracy=0";
+      // std::string cheng_path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/sloppy/twall>>t/results=1370/t-min=0010/xg=(0,4,2,6) ; type=0 ; accuracy=0";
+      std::string cheng_path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/sloppy/results=1370/t-min=0010/xg=(0,4,2,6) ; type=0 ; accuracy=0";
       read_cheng_PGG(cheng_pgg, cheng_path); 
 
       LatticePGG tmp(grid);
-      tmp = ret - timesI(cheng_pgg);
+      tmp = ret - imag(cheng_pgg);
+      cout << " not using right piont and distance function" << endl;
 			cout << norm2(tmp)  << endl;
+			cout << tmp  << endl;
 		}
 
 	}

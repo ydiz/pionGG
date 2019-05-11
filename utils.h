@@ -21,11 +21,16 @@ int distance(int t1, int t2, int T) {
   else return T-tmp;
 }
 
-int rightPoint(int t1, int t2, int T) {
-  if(t1 > T/2 && t2 <= T/2) return t2;
-  else if(t2 > T/2 && t1 <= T/2) return t1;
-  else return std::max(t1, t2);
+int rightPoint(int t_base, int t, int T) { // after shift t_base to 0, determine wheter t is on the right or t_base is on the right
+  int tmp = t - t_base; // shift t_base to 0
+  if(tmp > 0 && tmp <=T/2) return t;
+  else return t_base; // tmp < 0 || tmp > T/2
 }
 
+int leftPoint(int t_base, int t, int T) { // after shift t_base to 0, determine wheter t is on the left or t_base is on the left
+  int tmp = t - t_base; // shift t_base to 0
+  if(tmp > 0 && tmp <=T/2) return t_base;
+  else return t; // tmp < 0 || tmp > T/2
+}
 
 }}
