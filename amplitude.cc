@@ -69,7 +69,7 @@ double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &lep
 	std::cout << "Multiplication of hadronic and leptonic part: " << ret << std::endl;
 
 	double me = 511000;
-  double hadron_coeff = std::sqrt(std::pow(2*M_PI, 3) * 2 * M_PION) / 17853.18; // 17853.18 is <pi | pi(0) | 0>   ; normalization factor for pion operator
+  double hadron_coeff = std::sqrt(2 * M_PION) / 17853.18; // 17853.18 is <pi | pi(0) | 0> ; normalization factor for pion operator
 	double amplitude_M = hadron_coeff * 1./ (3 * std::sqrt(2))  / (2 * M_PI) / 137. / 137. * me * ret; // * std::sqrt(std::pow(2*M_PI, 3) * 2 * M_PION); 
 	std::cout << "Amplitude(for one polarization)  M = " << amplitude_M << "eV" <<  std::endl;
 
