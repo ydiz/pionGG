@@ -69,8 +69,9 @@ double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &lep
 	std::cout << "Multiplication of hadronic and leptonic part: " << ret << std::endl;
 
 	double me = 511000;
-  double hadron_coeff = std::sqrt(2 * M_PION) / 17853.18; // 17853.18 is <pi | pi(0) | 0> ; normalization factor for pion operator
-	double amplitude_M = hadron_coeff * 1./ (3 * std::sqrt(2))  / (2 * M_PI) / 137. / 137. * me * ret; // * std::sqrt(std::pow(2*M_PI, 3) * 2 * M_PION); 
+  double Z_V = 0.73;
+  double hadron_coeff = Z_V * Z_V * std::sqrt(2 * M_PION) / (17853.18 / std::sqrt(32*32*32.)); // 17853.18 is <pi | pi(0) | 0> ; normalization factor for pion operator
+	double amplitude_M = hadron_coeff * 1./ (3 * std::sqrt(2))  / (2 * M_PI) / 137. / 137. * me * ret;  
 	std::cout << "Amplitude(for one polarization)  M = " << amplitude_M << "eV" <<  std::endl;
 
 	double Mpi = 135000000;
@@ -80,10 +81,10 @@ double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &lep
 
 	double Gamma_photons = 7.75;
 	double R_real = Gamma / Gamma_photons;
-	std::cout << "Real part of branching ratio = " << R_real << "(should be 2.12e-8 or 2.82e-8)" << std::endl; 
+	std::cout << "Real part of branching ratio = " << R_real << "(should be 2.12e-8)" << std::endl; 
 
 	double R_imag = 4.75e-8;
-	std::cout << "Total branching ratio = " << R_imag + R_real << "(should be 6.87e-8 or 7.57e-8)" << std::endl;
+	std::cout << "Total branching ratio = " << R_imag + R_real << "(should be 6.87e-8)" << std::endl;
 }
 
 
