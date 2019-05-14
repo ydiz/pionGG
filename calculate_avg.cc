@@ -30,9 +30,10 @@ int main(int argc, char* argv[])
 	// // std::string dir = "/home/ydzhao/cuth/three_point_config/32D_ama";
 
 	// // int traj_start = 690, traj_num = 69;
-	int traj_start = 890, traj_num = 49;
+	int traj_start = 1250, traj_end = 1370, traj_sep = 10;
+  int traj_num = (traj_start - traj_end) / traj_sep + 1;
 	std::vector<int> trajs(traj_num);
-	for(int i=0; i<trajs.size(); ++i) trajs[i] = traj_start + i * 10;
+	for(int i=0; i<trajs.size(); ++i) trajs[i] = traj_start + i * traj_sep;
 
 	cout << "trajs: " << endl;
 	cout << trajs << endl;
