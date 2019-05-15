@@ -14,13 +14,13 @@ using namespace Grid::QCD;
 
 
 const std::vector<int> gcoor({32, 32, 32, 64});
-const std::vector<int> mpi_coor {1,1,1,8};
+// const std::vector<int> mpi_coor {1,1,1,8};
 
 int main(int argc, char* argv[])
 {
-
-  begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3])); // begin is defined in qlat/mpi.h
   Grid_init(&argc, &argv);
+  std::vector<int> mpi_coor = GridDefaultMpi();
+  begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3])); // begin is defined in qlat/mpi.h
 
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
 	LatticePGG pgg(grid);
@@ -29,9 +29,8 @@ int main(int argc, char* argv[])
 
 	// // std::string dir = "/home/ydzhao/cuth/three_point_config/32D_ama";
 
-	// // int traj_start = 690, traj_num = 69;
 	int traj_start = 1250, traj_end = 1370, traj_sep = 10;
-  int traj_num = (traj_start - traj_end) / traj_sep + 1;
+  int traj_num = (traj_end - traj_start) / traj_sep + 1;
 	std::vector<int> trajs(traj_num);
 	for(int i=0; i<trajs.size(); ++i) trajs[i] = traj_start + i * traj_sep;
 
@@ -62,20 +61,7 @@ int main(int argc, char* argv[])
 	print_grid_field_site(avg, std::vector<int>{0,0,0,0});
 	print_grid_field_site(avg, std::vector<int>{1, 2, 3, 4});
 
-	writeScidac(avg, "./average_three_point_exact");
-	
-	// readScidac(avg, "./lat_config/average_three_point_sloppy");
-	// LatticeComplex pp(grid); 
-	// get_pp(pp, "my_wall_wall.txt"); // pp = 1 / sqrt( exp(Mpi t) <pi(0) pi(t)> ) for t in [0, T/2 - 10)
-  // //
-	// // matrix element = e^(-Mpi t) * three point / sqrt( exp(Mpi t) <pi(0) pi(t)> )
-	// LatticePGG matrix_element(grid);
-	// matrix_element = avg * pp;
-  //
-  // matrix_element = imag(matrix_element); // result is (real, imag) -> (imag, 0)
-  //
-	// writeScidac(matrix_element, "./lat_config/matrix_element");
-  // cout << matrix_element << endl;
+	// writeScidac(avg, "./average_three_point_exact");
 
 	Grid_finalize();
   return 0;

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Grid/Grid.h>
 #include <dirent.h>
 #include "constants_macro.h"
