@@ -6,93 +6,31 @@
 #include "read_leptonic.h"
 #include "amplitude.h"
 #include "qlat_wrapper/qlat_wrapper.h"
-//
-// namespace Grid{
-// namespace QCD{
-//
-//
-// bool isWithinRegion(const std::vector<int> gcoor, int space_cutoff, int time_cutoff, const std::vector<int> fdims) {
-//   if((gcoor[0] <= space_cutoff || gcoor[0] >= fdims[0] - space_cutoff) && (gcoor[1] <= space_cutoff || gcoor[1] >= fdims[1] - space_cutoff) && (gcoor[2] <= space_cutoff || gcoor[2] >= fdims[2] - space_cutoff) && (gcoor[3] <= time_cutoff || gcoor[3] >= fdims[3] - time_cutoff)) return true;
-//   else return false;
-// }
-//
-//
-// double mult_hadronic_leptonic(const LatticePGG &hadronic, const LatticePGG &leptonic, int space_cutoff, int time_cutoff) {
-// 	LatticeComplex tmp(hadronic._grid);
-//   tmp = 0.;
-// 	// parallel_for(int ss=0; ss<hadronic._grid->oSites(); ++ss){
-// 	// 	tmp[ss]()()() = hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(1, 0) * leptonic[ss]()()(1, 0); 
-// 	// 	tmp[ss]()()() += hadronic[ss]()()(0, 2) * leptonic[ss]()()(0, 2) + hadronic[ss]()()(2, 0) * leptonic[ss]()()(2, 0); 
-// 	// 	tmp[ss]()()() += hadronic[ss]()()(2, 1) * leptonic[ss]()()(2, 1) + hadronic[ss]()()(1, 2) * leptonic[ss]()()(1, 2); 
-// 	// }
-//   parallel_for(int ss=0; ss<tmp._grid->lSites(); ss++){
-//     std::vector<int> lcoor, gcoor;
-//     localIndexToLocalGlobalCoor(tmp._grid, ss, lcoor, gcoor);
-//
-//     if(!isWithinRegion(gcoor, space_cutoff, time_cutoff, tmp._grid->_fdimensions)) continue; // set cutoff
-//
-//     typename LatticeComplex::vector_object::scalar_object tmp_site; //  this has to be defined within parallel_for
-// 		typename LatticePGG::vector_object::scalar_object hadronic_site, leptonic_site;
-// 		peekLocalSite(hadronic_site, hadronic, lcoor);
-// 		peekLocalSite(leptonic_site, leptonic, lcoor);
-//
-// 		tmp_site()()() = hadronic_site()()(0, 1) * leptonic_site()()(0, 1) + hadronic_site()()(1, 0) * leptonic_site()()(1, 0); 
-// 		tmp_site()()() += hadronic_site()()(0, 2) * leptonic_site()()(0, 2) + hadronic_site()()(2, 0) * leptonic_site()()(2, 0); 
-// 		tmp_site()()() += hadronic_site()()(2, 1) * leptonic_site()()(2, 1) + hadronic_site()()(1, 2) * leptonic_site()()(1, 2); 
-//     pokeLocalSite(tmp_site, tmp, lcoor);
-//   }
-//
-//
-// 	Complex ret = TensorRemove(sum(tmp));
-// 	return ret.real();
-// }
-//
-//
-// double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &leptonic, int space_cutoff, int time_cutoff, bool verbose=false) {
-//
-// 	LatticePGG hadronic(three_point._grid);
-// 	LatticeComplex pp(three_point._grid); 
-// 	get_pp(pp);// translational factor  //, "my_wall_wall.txt");
-// 	hadronic = three_point * pp;
-//   hadronic = imag(hadronic); 
-//
-//   std::cout << std::string(20, '*') << std::endl;
-//   std::cout << "space cutoff: " << space_cutoff << "; time cutoff: " << time_cutoff << std::endl;
-//   std::cout << std::string(20, '*') << std::endl;
-//
-// 	double ret = mult_hadronic_leptonic(hadronic, leptonic, space_cutoff, time_cutoff);
-// 	std::cout << "Multiplication of hadronic and leptonic part: " << ret << std::endl;
-//
-// 	double me = 511000;
-//   double Z_V = 0.73;
-//   double hadron_coeff = Z_V * Z_V * std::sqrt(2 * M_PION) / (17853.18 / std::sqrt(32*32*32.)); // 17853.18 is <pi | pi(0) | 0> ; normalization factor for pion operator
-// 	double amplitude_M = hadron_coeff * 1./ (3 * std::sqrt(2))  / (2 * M_PI) / 137. / 137. * me * ret;  
-// 	std::cout << "Amplitude(for one polarization)  M = " << amplitude_M << "eV" <<  std::endl;
-//
-// 	double Mpi = 135000000;
-// 	double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi));
-// 	double Gamma = 2.0 * beta / (16 * M_PI * Mpi) * amplitude_M * amplitude_M; // the first factor 2.0 comes from adding two possible polarizations
-// 	std::cout << "Decay rate Gamma = " << Gamma << "eV" << std::endl;
-//
-// 	double Gamma_photons = 7.75;
-// 	double R_real = Gamma / Gamma_photons;
-// 	std::cout << "Real part of branching ratio = " << R_real << "(should be 2.12e-8)" << std::endl; 
-//
-// 	double R_imag = 4.75e-8;
-// 	std::cout << "Total branching ratio = " << R_imag + R_real << "(should be 6.87e-8)" << std::endl;
-//
-//   return R_real; // return real part of branching ratio
-// }
-//
-//
-// }}
-//
+
 using namespace std;
 using namespace Grid;
 using namespace Grid::QCD;
 using namespace qlat;
 
 const std::vector<int> gcoor({32, 32, 32, 64});
+
+void calculate_jackknife(const std::vector<double> &jackknife_results){
+
+  int traj_num = jackknife_results.size();
+
+  double jackknife_avg = 0.;
+  for(double x: jackknife_results) jackknife_avg += x;
+  jackknife_avg /= double(traj_num);
+
+  double jackknife_error = 0.;
+  for(double x: jackknife_results) jackknife_error += (x - jackknife_avg) * (x - jackknife_avg);
+  jackknife_error = std::sqrt(jackknife_error * (double(traj_num) - 1.) / double(traj_num));
+
+  cout << "jackknife average: " << jackknife_avg << endl;
+  cout << "jackknife error: " << jackknife_error << endl;
+  std::cout << std::string(20, '*') << std::endl;
+
+}
 
 int main(int argc, char* argv[])
 {
@@ -104,57 +42,57 @@ int main(int argc, char* argv[])
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), GridDefaultMpi());
 
   int space_cutoff = 16;
-  int time_cutoff = 16;
+  int time_cutoff = 16; // cutoff in calculating the multiplication of hadronic an leptonic parts
 
-	LatticePGG leptonic(grid);
+  LatticePGG avg(grid); // average three point function
+  readScidac(avg, "./lat_config/average_three_point_exact");
 
-	LatticePGG avg(grid);
-	readScidac(avg, "./lat_config/average_three_point_exact");
-
+  LatticePGG leptonic(grid);
   std::string filename_p3 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre_with_p3/data.txt";
   std::string filename_p1 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-4Cuhre_with_p1/data.txt";
-	get_leptonic(filename_p1, filename_p3, leptonic, SPACE_LIMIT, TIME_LIMIT);
+  get_leptonic(filename_p1, filename_p3, leptonic, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
 
-
-	int traj_start = 1250, traj_end = 1370, traj_sep = 10;
+  // int traj_start = 1250, traj_end = 1370, traj_sep = 10;
+  int traj_start = 900, traj_end = 1370, traj_sep = 10;
   int traj_num = (traj_end - traj_start) / traj_sep + 1;
-	std::vector<int> trajs(traj_num);
-	for(int i=0; i<trajs.size(); ++i) trajs[i] = traj_start + i * traj_sep;
 
-	cout << "trajs: " << endl;
-	cout << trajs << endl;
+  // int time_cutoff_start = 2, time_cutoff_end = 4;
+  int time_cutoff_start = 2, time_cutoff_end = 16;
+  int time_cutoff_num = time_cutoff_end - time_cutoff_start + 1;
 
-	std::vector<double> jackknife_results(traj_num);
+  // two dimensaional jackknife results. dim1: time cutoff. dim2: traj_num
+  std::vector<std::vector<double>> jackknife_results(time_cutoff_num, std::vector<double>(traj_num));
 
-	for(int i=0; i<trajs.size(); ++i) {
-		std::string file = three_point_exact_path(trajs[i]);
-		if(!dirExists(file)) cout << "The following file does not exist and I am skipping it: " << file << endl; 
+  for(int traj = traj_start; traj <= traj_end; traj += traj_sep) {
 
     LatticePGG pgg_i(grid);
+    std::string file = three_point_exact_path(traj);
     read_cheng_PGG(pgg_i, file);
 
     LatticePGG jackknife_sample(grid);
     jackknife_sample = (avg * double(traj_num) - pgg_i) * (1. / double(traj_num-1));
-		// std::string file = three_point_exact_path(traj);
-		// if(!dirExists(file)) cout << "The following file does not exist and I am skipping it: " << file << endl; 
 
-    jackknife_results[i] = calculate_decay_rate(jackknife_sample, leptonic, space_cutoff, time_cutoff); 
+    for(time_cutoff = time_cutoff_start; time_cutoff <= time_cutoff_end; ++time_cutoff) {
 
-		// qlat::PionGGElemField qlat_pgg;
-    //
-		// // cout << "reading from: " << file << endl;
-    //
-		// dist_read_field(qlat_pgg, file);
-		// cout << "Finished reading" << endl;
-		// grid_convert(pgg, qlat_pgg);
-    //
-		// avg += pgg;
+      double decay_rate = calculate_decay_rate(jackknife_sample, leptonic, space_cutoff, time_cutoff, false);
+      jackknife_results[time_cutoff - time_cutoff_start][(traj - traj_start)/traj_sep] = decay_rate; 
+    }
+  }
 
-	}
+  // ======================================================================
 
-  cout << "jackknife samples: " << endl;
-  cout << jackknife_results << endl;
+  std::cout << "traj start: " << traj_start << " traj end: " << traj_end << " traj sep: " << traj_sep << std::endl;
 
-	Grid_finalize();
+  for(time_cutoff = time_cutoff_start; time_cutoff <= time_cutoff_end; ++time_cutoff) {
+
+    std::cout << std::string(20, '*') << std::endl;
+    cout << "time cutoff: " << time_cutoff << endl;
+    cout << "jackknife samples: " << endl;
+    cout << jackknife_results[time_cutoff - time_cutoff_start] << endl;
+
+    calculate_jackknife(jackknife_results[time_cutoff - time_cutoff_start]); // jackknife average and error
+  }
+
+  Grid_finalize();
   return 0;
 }

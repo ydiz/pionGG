@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 	// std::string filename_p1 = "/home/ydzhao/cuth/cuba_integration/results/p30e10-4Cuhre_with_p1/data.txt";
   std::string filename_p3 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre_with_p3/data.txt";
   std::string filename_p1 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-4Cuhre_with_p1/data.txt";
-	get_leptonic(filename_p1, filename_p3, leptonic, SPACE_LIMIT, TIME_LIMIT);
+	get_leptonic(filename_p1, filename_p3, leptonic, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
 
   calculate_decay_rate(avg, leptonic, space_cutoff, time_cutoff); 
 

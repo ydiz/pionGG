@@ -44,7 +44,9 @@ double mult_hadronic_leptonic(const LatticePGG &hadronic, const LatticePGG &lept
 }
 
 
-double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &leptonic, int space_cutoff, int time_cutoff, bool verbose=false) {
+double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &leptonic, int space_cutoff, int time_cutoff, bool verbose=true) {
+
+  if(verbose==false) std::cout.clear(std::ios_base::eofbit); // set state of cout to eofbit. cout will not print anything
 
 	LatticePGG hadronic(three_point._grid);
 	LatticeComplex pp(three_point._grid); 
@@ -77,6 +79,7 @@ double calculate_decay_rate(const LatticePGG &three_point, const LatticePGG &lep
 	double R_imag = 4.75e-8;
 	std::cout << "Total branching ratio = " << R_imag + R_real << "(should be 6.87e-8)" << std::endl;
 
+  if(verbose==false) std::cout.clear(); // set the state of cout back to goodbit
   return R_real; // return real part of branching ratio
 }
 
