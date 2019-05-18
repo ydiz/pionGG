@@ -6,6 +6,7 @@
 #include "read_leptonic.h"
 #include "amplitude.h"
 #include "qlat_wrapper/qlat_wrapper.h"
+#include "calculate_avg.h"
 
 using namespace std;
 using namespace Grid;
@@ -39,24 +40,24 @@ int main(int argc, char* argv[])
   std::vector<int> mpi_coor = GridDefaultMpi();
   begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3])); // begin is defined in qlat/mpi.h
 
-  GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), GridDefaultMpi());
+  GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
 
-  int space_cutoff = 16;
-  int time_cutoff = 16; // cutoff in calculating the multiplication of hadronic an leptonic parts
-
-  LatticePGG avg(grid); // average three point function
-  readScidac(avg, "./lat_config/average_three_point_exact");
 
   LatticePGG leptonic(grid);
   std::string filename_p3 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre_with_p3/data.txt";
   std::string filename_p1 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-4Cuhre_with_p1/data.txt";
   get_leptonic(filename_p1, filename_p3, leptonic, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
 
-  // int traj_start = 1250, traj_end = 1370, traj_sep = 10;
-  int traj_start = 900, traj_end = 1370, traj_sep = 10;
+  int traj_start = 1250, traj_end = 1370, traj_sep = 10;
+  // int traj_start = 900, traj_end = 1370, traj_sep = 10;
   int traj_num = (traj_end - traj_start) / traj_sep + 1;
 
-  // int time_cutoff_start = 2, time_cutoff_end = 4;
+  LatticePGG avg(grid); // average three point function
+  readScidac(avg, "./lat_config/average_three_point_exact_1250-1370"); // make sure trajectory is consistent
+  // readScidac(avg, "./lat_config/average_three_point_exact_900-1370"); // make sure trajectory is consistent
+  // calculate_avg_three_point(avg, traj_start, traj_end, traj_sep);
+
+  // int space_cutoff = 16;
   int time_cutoff_start = 2, time_cutoff_end = 16;
   int time_cutoff_num = time_cutoff_end - time_cutoff_start + 1;
 
@@ -72,10 +73,13 @@ int main(int argc, char* argv[])
     LatticePGG jackknife_sample(grid);
     jackknife_sample = (avg * double(traj_num) - pgg_i) * (1. / double(traj_num-1));
 
-    for(time_cutoff = time_cutoff_start; time_cutoff <= time_cutoff_end; ++time_cutoff) {
+    std::vector<double> cutoffs = calculate_decay_rate_cutoff(jackknife_sample, leptonic);
 
-      double decay_rate = calculate_decay_rate(jackknife_sample, leptonic, space_cutoff, time_cutoff, false);
-      jackknife_results[time_cutoff - time_cutoff_start][(traj - traj_start)/traj_sep] = decay_rate; 
+    for(int time_cutoff = time_cutoff_start; time_cutoff <= time_cutoff_end; ++time_cutoff) {
+      // double decay_rate = calculate_decay_rate(jackknife_sample, leptonic, space_cutoff, time_cutoff, false);
+      // jackknife_results[time_cutoff - time_cutoff_start][(traj - traj_start)/traj_sep] = decay_rate; 
+      int t_idx = time_cutoff - time_cutoff_start;
+      jackknife_results[t_idx][(traj - traj_start)/traj_sep] = cutoffs[time_cutoff]; 
     }
   }
 
@@ -83,7 +87,7 @@ int main(int argc, char* argv[])
 
   std::cout << "traj start: " << traj_start << " traj end: " << traj_end << " traj sep: " << traj_sep << std::endl;
 
-  for(time_cutoff = time_cutoff_start; time_cutoff <= time_cutoff_end; ++time_cutoff) {
+  for(int time_cutoff = time_cutoff_start; time_cutoff <= time_cutoff_end; ++time_cutoff) {
 
     std::cout << std::string(20, '*') << std::endl;
     cout << "time cutoff: " << time_cutoff << endl;
