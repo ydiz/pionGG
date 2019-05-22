@@ -169,8 +169,8 @@ std::vector<double> mult_hadronic_leptonic_cutoff_2(const LatticePGG &hadronic, 
 
   parallel_for(int ss=0; ss<tmp._grid->oSites(); ++ss){
 		tmp[ss]()()() = hadronic[ss]()()(0, 1) * leptonic[ss]()()(0, 1) + hadronic[ss]()()(1, 0) * leptonic[ss]()()(1, 0); 
-		// tmp[ss]()()() += hadronic[ss]()()(0, 2) * leptonic[ss]()()(0, 2) + hadronic[ss]()()(2, 0) * leptonic[ss]()()(2, 0); 
-		// tmp[ss]()()() += hadronic[ss]()()(2, 1) * leptonic[ss]()()(2, 1) + hadronic[ss]()()(1, 2) * leptonic[ss]()()(1, 2); 
+		tmp[ss]()()() += hadronic[ss]()()(0, 2) * leptonic[ss]()()(0, 2) + hadronic[ss]()()(2, 0) * leptonic[ss]()()(2, 0); 
+		tmp[ss]()()() += hadronic[ss]()()(2, 1) * leptonic[ss]()()(2, 1) + hadronic[ss]()()(1, 2) * leptonic[ss]()()(1, 2); 
   }
 
   int T = hadronic._grid->_fdimensions[Tdir];
@@ -201,6 +201,7 @@ std::vector<double> calculate_decay_rate_cutoff_2(const LatticePGG &three_point,
 	hadronic = three_point * pp;
   hadronic = imag(hadronic); 
 
+  // print_grid_field_site(leptonic, std::vector<int>{1,2,3,4});
 	std::vector<double> ret = mult_hadronic_leptonic_cutoff_2(hadronic, leptonic);
   std::cout << ret << std::endl;
 
@@ -209,7 +210,8 @@ std::vector<double> calculate_decay_rate_cutoff_2(const LatticePGG &three_point,
   double hadron_coeff = 1./ (3 * std::sqrt(2)) * Z_V * Z_V * std::sqrt(2 * M_PION) / (17853.18 / std::sqrt(32*32*32.)); // 17853.18 is <pi | pi(0) | 0> ; normalization factor for pion operator
   double lepton_coeff = 8. / (M_PI) / 137. / 137. * me;
   std::vector<double> amplitude_M(ret.size());
-  for(int i=0; i<ret.size(); ++i) amplitude_M[i] = 3.0 * hadron_coeff * lepton_coeff * ret[i]; // FIXME: 3.0
+  // for(int i=0; i<ret.size(); ++i) amplitude_M[i] = 3.0 * hadron_coeff * lepton_coeff * ret[i]; // FIXME: 3.0
+  for(int i=0; i<ret.size(); ++i) amplitude_M[i] = hadron_coeff * lepton_coeff * ret[i]; // FIXME: 3.0
   std::cout << lepton_coeff << std::endl;
 
 	double Mpi = 135000000;

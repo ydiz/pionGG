@@ -21,19 +21,19 @@ using Data = std::vector<std::vector<double>>;
 double get_integral_site(const std::vector<int> &gcoor, const Data &data, const std::vector<int> &gdim, int space_limit, int time_limit) {
 
   // FIXME: delete this
-	int x = qlat::smod(gcoor[0], gdim[0]);
-	int y = qlat::smod(gcoor[1], gdim[1]);
-	int z = qlat::smod(gcoor[2], gdim[2]);
-	int t = qlat::smod(gcoor[3], gdim[3]);
+	// int x = qlat::smod(gcoor[0], gdim[0]);
+	// int y = qlat::smod(gcoor[1], gdim[1]);
+	// int z = qlat::smod(gcoor[2], gdim[2]);
+	// int t = qlat::smod(gcoor[3], gdim[3]);
 
 	if( (x <= space_limit && x >= -space_limit) && (y <= space_limit && y >= -space_limit) && (z <= space_limit && z >= -space_limit) && (t<=time_limit && t >= -time_limit)) {
 		double r = std::sqrt(x*x + y*y + z*z); 	
-    if(r==0) return 0.; // do not know why without this the site will be nan
+    // if(r==0) return 0.; // do not know why without this the site will be nan
 		int floor = int(r), ceiling = int(r) + 1;
 		double ret = linear_interpolation(r, floor, data[floor][std::abs(t)], ceiling, data[ceiling][std::abs(t)]);
-    // if(z<0) ret = -ret; // p3 integral is odd in z, and even in x,y,t
 
-    return ret / r; //FIXME: r is divided here
+    // return ret / r; //FIXME: r is divided here
+    return ret; //FIXME: r is divided here
 	}
 	else return 0.;
 }
@@ -85,13 +85,12 @@ void get_leptonic_new(const std::string &filename, LatticePGG &lat, int space_li
 		typename LatticePGG::vector_object::scalar_object m;
 		m = 0.;
 		m()()(0, 1) = Complex(val * gcoor[Zdir], 0); 
-		// m()()(0, 2) = Complex(-val_p2, 0); 
-		// m()()(1, 2) = Complex(val_p1, 0); 
+		m()()(0, 2) = Complex(-val * gcoor[Ydir], 0); // Minus sign comes from spinor matrix
+		m()()(1, 2) = Complex(val * gcoor[Xdir], 0); 
 		m()()(1, 0) = - m()()(0, 1);
-		// m()()(2, 0) = - m()()(0, 2);
-		// m()()(2, 1) = - m()()(1, 2);
+		m()()(2, 0) = - m()()(0, 2);
+		m()()(2, 1) = - m()()(1, 2);
 
-		// if( (gcoor[0] > 8 &&gcoor[0] <24) || (gcoor[1] > 8 &&gcoor[1] <24) || (gcoor[2] > 8 &&gcoor[2] <24)|| (gcoor[3] > 8 &&gcoor[3] <56)) m = 0.; 
 		pokeLocalSite(m, lat, lcoor);
 	}
 }
