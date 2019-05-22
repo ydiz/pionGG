@@ -36,4 +36,5 @@ makefile
 cuth_calculate_avg.cc
 
 !integral
-!integral/*
+!integral/*.cc
+!integral/*.h
