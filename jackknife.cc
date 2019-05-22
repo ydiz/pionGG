@@ -3,11 +3,13 @@
 #include "constants_macro.h"
 #include "io.h"
 #include "pGG.h"
-#include "read_leptonic.h"
+// #include "read_leptonic.h"
 #include "amplitude.h"
 #include "qlat_wrapper/qlat_wrapper.h"
 #include "jackknife.h"
 #include "jack_init.h"
+#include "lep.h"
+
 
 #include "imaginary_part.h"
 
@@ -31,13 +33,17 @@ int main(int argc, char* argv[])
 
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
 
-  // LatticePGG leptonic(grid);
+  LatticePGG leptonic(grid);
   // std::string filename_p3 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-5Cuhre_with_p3/data.txt";
   // std::string filename_p1 = "/projects/HadronicLight_4/yidizhao/cooley/pionGG/integrals/p30e10-4Cuhre_with_p1/data.txt";
   // get_leptonic(filename_p1, filename_p3, leptonic, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
-  
-  LatticeComplex leptonic(grid);
-  imag_part(leptonic);
+  //
+	std::string filename = "./integral/data.txt"; // integral with p3 in the numerator
+	int space_limit = LEPTONIC_SPACE_LIMIT, time_limit = LEPTONIC_TIME_LIMIT;
+	get_leptonic_new(filename, leptonic, space_limit, time_limit);
+  //
+  // LatticeComplex leptonic(grid);
+  // imag_part(leptonic);
   //
   // cout << leptonic << endl;
   // assert(0);
@@ -52,8 +58,8 @@ int main(int argc, char* argv[])
     read_cheng_PGG(three_point, file);
 
     // std::vector<double> cutoffs = calculate_decay_rate_cutoff(three_point, leptonic);
-
-    std::vector<double> cutoffs = calculate_imag_decay_rate_cutoff(three_point, leptonic);
+    // std::vector<double> cutoffs = calculate_imag_decay_rate_cutoff(three_point, leptonic);
+    std::vector<double> cutoffs = calculate_decay_rate_cutoff_2(three_point, leptonic);
 
     for(int time_cutoff = para.time_cutoff_start; time_cutoff <= para.time_cutoff_end; ++time_cutoff) {
       int t_idx = time_cutoff - para.time_cutoff_start;

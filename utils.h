@@ -3,6 +3,24 @@
 namespace Grid {
 namespace QCD {
 
+int my_smod(int x, int L) {
+  if(x<=L/2) return x;
+  else return x - L;
+}
+
+std::vector<int> my_smod(const std::vector<int> &x, const std::vector<int> &L) {
+  std::vector<int> ret(x.size());
+  for(int i=0; i<x.size(); ++i) ret[i] = my_smod(x[i], L[i]);
+  return ret;
+}
+
+template<class T>
+double len(const std::vector<T> &vec){
+  double ret = 0.;
+  for(auto x: vec) ret += x * x;
+  return std::sqrt(ret);
+}
+
 void localIndexToLocalGlobalCoor(GridBase *grid, int ss, std::vector<int> &lcoor, std::vector<int> &gcoor) {
   // ss is local index; parallel_for(int ss=0; ss<ret._grid->lSites(); ss++)
   lcoor.resize(4);

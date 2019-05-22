@@ -20,6 +20,7 @@ using Data = std::vector<std::vector<double>>;
 // double get_p3_site(const std::vector<int> &gcoor, double data[13][17][17], const std::vector<int> &gdim) {
 double get_integral_site(const std::vector<int> &gcoor, const Data &data, const std::vector<int> &gdim, int space_limit, int time_limit) {
 
+  // FIXME: delete this
 	int x = qlat::smod(gcoor[0], gdim[0]);
 	int y = qlat::smod(gcoor[1], gdim[1]);
 	int z = qlat::smod(gcoor[2], gdim[2]);
@@ -27,6 +28,7 @@ double get_integral_site(const std::vector<int> &gcoor, const Data &data, const 
 
 	if( (x <= space_limit && x >= -space_limit) && (y <= space_limit && y >= -space_limit) && (z <= space_limit && z >= -space_limit) && (t<=time_limit && t >= -time_limit)) {
 		double r = std::sqrt(x*x + y*y + z*z); 	
+    if(r==0) return 0.; // do not know why without this the site will be nan
 		int floor = int(r), ceiling = int(r) + 1;
 		double ret = linear_interpolation(r, floor, data[floor][std::abs(t)], ceiling, data[ceiling][std::abs(t)]);
     // if(z<0) ret = -ret; // p3 integral is odd in z, and even in x,y,t
@@ -66,7 +68,7 @@ void read_integrals(const std::string &filename, int space_limit, int time_limit
 }
 
 
-void get_leptonic(const std::string &filename, LatticePGG &lat, int space_limit, int time_limit) {
+void get_leptonic_new(const std::string &filename, LatticePGG &lat, int space_limit, int time_limit) {
 	
 	Data data;
 	read_integrals(filename, space_limit, time_limit, data);
@@ -76,12 +78,10 @@ void get_leptonic(const std::string &filename, LatticePGG &lat, int space_limit,
     std::vector<int> lcoor, gcoor;
     localIndexToLocalGlobalCoor(lat._grid, ss, lcoor, gcoor);
 
+    gcoor = my_smod(gcoor, lat._grid->_fdimensions);
+
 		double val = get_integral_site(gcoor, data, lat._grid->_fdimensions, space_limit, time_limit); 
-    //
-    // std::vector<int> gcoor_p2 = gcoor;
-    // std::swap(gcoor_p2[0], gcoor_p2[1]); // To calculate the integral with p2, just swap x and y coordinates in the integral with p1;
-		// double val_p2 = get_integral_site_p1(gcoor_p2, data_p1, lat._grid->_fdimensions, space_limit, time_limit); 
-		
+
 		typename LatticePGG::vector_object::scalar_object m;
 		m = 0.;
 		m()()(0, 1) = Complex(val * gcoor[Zdir], 0); 
