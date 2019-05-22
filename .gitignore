@@ -34,3 +34,6 @@ makefile
 !qlat_wrapper/*
 
 cuth_calculate_avg.cc
+
+!integral
+!integral/*

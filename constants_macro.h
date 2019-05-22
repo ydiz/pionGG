@@ -4,6 +4,7 @@
 #define LEPTONIC_SPACE_LIMIT 16
 
 #define M_PION 0.139474 
+#define M_L  0.000528 // calculate by 0.000511 * 0.139474 / 0.13497
 
 std::string gauge_transform_path_32D(int traj) {
 	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/gauge-transform";
