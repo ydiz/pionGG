@@ -75,8 +75,6 @@ std::vector<double> Func::operator()(const std::vector<double>& v) const{
   sincos(p * w, &sin_pw, &cos_pw);
 
   ans[0] =  std::exp(-Epe * w0) / (Epe * (- M_PION*M_PION + 4. * pe * pe * c * c)) * (cos_pw - sin_pw / (p * w));
-  // ans[0] = p * p;
-  // ans[0] = 1;
 
   ans[0] *= 2. * p_interval;
 
@@ -110,7 +108,7 @@ int main (void)
   Func f3;
   f3.p_interval = upper;
 
-  for(double w=0; w<=16; w+=1.) 
+  for(double w=0; w<=28; w+=1.) 
     for(int w0=0; w0<=16; ++w0) {
       double ret;
       std::vector<double> params {w, double(w0)};
