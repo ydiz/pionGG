@@ -1,10 +1,10 @@
-#include <stdio.h>
 #include <math.h>
 #include <gsl/gsl_integration.h>
 #include <cuba.h>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <iomanip>
 
 #include "../constants_macro.h"
 #include "cuba_wrapper.h"
@@ -42,6 +42,7 @@ void integrate_qags(T f, std::vector<double> params, double lower, double upper,
   gsl_integration_qags (&F, lower, upper, epsabs, epsrel, 1000, w, &result, &error);
 }
 
+// calculate principal part integral
 template<class T>
 void integrate_qawc(T f, std::vector<double> params, double lower, double upper, double pole, double epsabs, double epsrel, gsl_integration_workspace *w, double &result, double &error) {
   gsl_function F;
@@ -101,9 +102,9 @@ int main (void)
   double ret1, ret2, ret3, error;
   double lower = 0.00001, upper = 30, epsrel = 1e-4;
 
-
   double beta = std::sqrt(1 - 4*M_L*M_L / (M_PION*M_PION));
-  double beta_coeff = 1. / beta * std::log((1 + beta) / (1 - beta));
+  double log_beta = std::log((1 + beta) / (1 - beta));
+  // double beta_coeff = log_beta / beta;
 
   Func f3;
   f3.p_interval = upper;
@@ -121,11 +122,14 @@ int main (void)
         integrate_qawc(f1, params, lower, upper, M_PION/2., 0, epsrel, workspace, ret1, error);
         integrate_qags(f2, params, lower, upper, 0, epsrel, workspace, ret2, error);
         ret3 = integrate_CUBA(f3, epsrel);
-        ret = std::exp(0.5 * M_PION * w0) / w * M_PI / 2. / (M_PION * M_PION) * beta_coeff * ret1 
-              - std::exp(-0.5 * M_PION * w0) / w * M_PI / 2. / (M_PION * M_PION) * beta_coeff * ret2
-              + M_PI / 2.0 / w * ret3;
+        // ret = - std::exp(0.5 * M_PION * w0) / w / w * M_PI / 4. / (f3.pe * M_PION) * beta_coeff * ret1 
+        //       + std::exp(-0.5 * M_PION * w0) / w / w * M_PI / 4. / (f3.pe * M_PION) * beta_coeff * ret2
+        //       + M_PI / 2.0 / w / w * ret3;
+        ret = - std::exp(0.5 * M_PION * w0) / w / w * M_PI / (f3.pe * M_PION) * log_beta * ret1 
+              + std::exp(-0.5 * M_PION * w0) / w / w * M_PI / (f3.pe * M_PION) * log_beta * ret2
+              + 2.0 * M_PI / w / w * ret3;
       }
-      std::cout << "integral = " << ret  << std::endl;
+      std::cout << std::setprecision(10) << "integral = " << ret  << std::endl;
 
   }
 
