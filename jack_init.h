@@ -38,6 +38,10 @@ void init_para(int argc, char **argv, Jack_para &para)
   }
 
 	std::cout << std::string(20, '*') << std::endl;
+	std::cout << "target: " << para.lep_para.target << std::endl;
+	std::cout << "file_p3: " << para.lep_para.file_p3 << std::endl;
+	std::cout << "file_p1: " << para.lep_para.file_p1 << std::endl;
+	std::cout << std::string(20, '*') << std::endl;
 	std::cout << "traj_start: " << para.traj_start << std::endl;
 	std::cout << "traj_end: " << para.traj_end << std::endl;
 	std::cout << "traj_sep: " << para.traj_sep << std::endl;

@@ -3,7 +3,7 @@
 #include <Grid/Grid.h>
 #include "pGG.h"
 #include "lep.h"
-#include "read_leptonic.h"
+#include "lep_CUBA3d.h"
 #include "imaginary_part.h"
 
 namespace Grid{
