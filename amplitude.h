@@ -52,7 +52,8 @@ std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, c
 	std::vector<double> ret = mult_HL_cutoff(hadronic, leptonic);
 
 	double me = 511000;
-  double Z_V = 0.73;
+  // double Z_V = 0.73;
+  double Z_V = 0.7260;
   double hadron_coeff = 1./ (3 * std::sqrt(2)) * Z_V * Z_V * std::sqrt(2 * M_PION) / (17853.18 / std::sqrt(32*32*32.)); // 17853.18 is <pi | pi(0) | 0> ; normalization factor for pion operator
   // double lepton_coeff = 1. / (2 * M_PI) / 137. / 137. * me;
   std::vector<double> amplitude_M(ret.size());
@@ -63,7 +64,8 @@ std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, c
   double Gamma_coeff = 2.0 * beta / (16 * M_PI * Mpi); // the first factor 2.0 comes from adding two possible polarizations
 	// double Gamma = Gamma_coeff * amplitude_M * amplitude_M;
 
-	double Gamma_photons = 7.75;
+	// double Gamma_photons = 7.75;
+	double Gamma_photons = 7.82;
 	// double R_real = Gamma / Gamma_photons;
 
   std::vector<double> R_real(ret.size());
