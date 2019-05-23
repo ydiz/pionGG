@@ -11,10 +11,6 @@
 namespace Grid {
 namespace QCD {
 
-double linear_interpolation(double x, double x_lower, double y_lower, double x_upper, double y_upper) {
-	return ( (x - x_lower) * y_upper +  (x_upper - x) * y_lower ) / (x_upper - x_lower);
-}
-
 using Data = std::vector<std::vector<std::vector<double>>>;
 using Data_p1 = std::vector<std::vector<std::vector<std::vector<double>>>>;
 
@@ -122,7 +118,7 @@ void read_integrals_p1(const std::string &filename, int space_limit, int time_li
 }
 
 
-void get_leptonic(const std::string &filename_p1, const std::string &filename_p3, LatticePGG &lat, int space_limit, int time_limit) {
+void get_leptonic_CUBA3d(const std::string &filename_p1, const std::string &filename_p3, LatticePGG &lat, int space_limit, int time_limit) {
 	
 	Data data_p3;
 	Data_p1 data_p1;

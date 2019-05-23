@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Grid/Grid.h>
+#include "lep_para.h"
 
 // void calculate_jackknife(const std::vector<double> &jackknife_results){
 //
@@ -64,10 +65,19 @@ std::vector<RealD> jack_stats(const std::vector<RealD>& data)
   return jack_stats;
 }
 
-}}
 
 struct Jack_para {
 
   int traj_start, traj_end, traj_sep, traj_num;
   int time_cutoff_start, time_cutoff_end, time_cutoff_num;
+  Lep_para lep_para;
 };
+
+
+
+
+
+
+
+
+}}

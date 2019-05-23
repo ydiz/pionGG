@@ -7,6 +7,9 @@
 
 namespace po = boost::program_options;
 
+namespace Grid {
+namespace QCD {
+
 void init_para(int argc, char **argv, Jack_para &para)
 {
   po::options_description desc("jackknife options");
@@ -16,6 +19,9 @@ void init_para(int argc, char **argv, Jack_para &para)
                     ("traj_sep", po::value<int>(&para.traj_sep)->default_value(10))
                     ("time_cutoff_start", po::value<int>(&para.time_cutoff_start)->default_value(1))
                     ("time_cutoff_end", po::value<int>(&para.time_cutoff_end)->default_value(16))
+                    ("target", po::value<std::string>(&para.lep_para.target)->default_value(""))
+                    ("file_p3", po::value<std::string>(&para.lep_para.file_p3)->default_value(""))
+                    ("file_p1", po::value<std::string>(&para.lep_para.file_p1)->default_value(""))
                     ;
 
   po::variables_map vm;
@@ -43,3 +49,7 @@ void init_para(int argc, char **argv, Jack_para &para)
 	std::cout << std::string(20, '*') << std::endl;
 
 }
+
+
+
+}}

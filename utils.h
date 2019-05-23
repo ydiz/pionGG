@@ -3,6 +3,10 @@
 namespace Grid {
 namespace QCD {
 
+double linear_interpolation(double x, double x_lower, double y_lower, double x_upper, double y_upper) {
+	return ( (x - x_lower) * y_upper +  (x_upper - x) * y_lower ) / (x_upper - x_lower);
+}
+
 int my_smod(int x, int L) {
   if(x<=L/2) return x;
   else return x - L;

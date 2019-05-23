@@ -7,40 +7,26 @@
 #include "pGG.h"
 #include "utils.h"
 
-
 namespace Grid {
 namespace QCD {
 
-double linear_interpolation(double x, double x_lower, double y_lower, double x_upper, double y_upper) {
-	return ( (x - x_lower) * y_upper +  (x_upper - x) * y_lower ) / (x_upper - x_lower);
-}
-
-using Data = std::vector<std::vector<double>>;
-
 // IMPORTANT: gcoor should have already be "smod".
-double get_integral_site(const std::vector<int> &gcoor, const Data &data, const std::vector<int> &gdim, int space_limit, int time_limit) {
+double get_integral_site(const std::vector<int> &gcoor, const std::vector<std::vector<double>> &data, const std::vector<int> &gdim, int space_limit, int time_limit) {
   
   int x = gcoor[0], y = gcoor[1], z = gcoor[2], t = gcoor[3];
-  // FIXME: delete this
-	// int x = qlat::smod(gcoor[0], gdim[0]);
-	// int y = qlat::smod(gcoor[1], gdim[1]);
-	// int z = qlat::smod(gcoor[2], gdim[2]);
-	// int t = qlat::smod(gcoor[3], gdim[3]);
 
 	if( (x <= space_limit && x >= -space_limit) && (y <= space_limit && y >= -space_limit) && (z <= space_limit && z >= -space_limit) && (t<=time_limit && t >= -time_limit)) {
 		double r = std::sqrt(x*x + y*y + z*z); 	
-    // if(r==0) return 0.; // do not know why without this the site will be nan
 		int floor = int(r), ceiling = int(r) + 1;
 		double ret = linear_interpolation(r, floor, data[floor][std::abs(t)], ceiling, data[ceiling][std::abs(t)]);
 
-    // return ret / r; //FIXME: r is divided here
-    return ret; //FIXME: r is divided here
+    return ret;
 	}
 	else return 0.;
 }
 
 
-void read_integrals(const std::string &filename, int space_limit, int time_limit, Data &data) 
+void read_integrals(const std::string &filename, int space_limit, int time_limit, std::vector<std::vector<double>> &data) 
 {
 
 	std::vector<int> shape {int(space_limit * std::sqrt(3)) + 2, time_limit + 1};
@@ -69,9 +55,9 @@ void read_integrals(const std::string &filename, int space_limit, int time_limit
 }
 
 
-void get_leptonic_new(const std::string &filename, LatticePGG &lat, int space_limit, int time_limit) {
+void get_leptonic(const std::string &filename, LatticePGG &lat, int space_limit, int time_limit) {
 	
-	Data data;
+	std::vector<std::vector<double>> data;
 	read_integrals(filename, space_limit, time_limit, data);
 
 	parallel_for(int ss=0; ss<lat._grid->lSites(); ss++){
