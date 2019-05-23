@@ -17,9 +17,10 @@ double linear_interpolation(double x, double x_lower, double y_lower, double x_u
 
 using Data = std::vector<std::vector<double>>;
 
-// double get_p3_site(const std::vector<int> &gcoor, double data[13][17][17], const std::vector<int> &gdim) {
+// IMPORTANT: gcoor should have already be "smod".
 double get_integral_site(const std::vector<int> &gcoor, const Data &data, const std::vector<int> &gdim, int space_limit, int time_limit) {
-
+  
+  int x = gcoor[0], y = gcoor[1], z = gcoor[2], t = gcoor[3];
   // FIXME: delete this
 	// int x = qlat::smod(gcoor[0], gdim[0]);
 	// int y = qlat::smod(gcoor[1], gdim[1]);
