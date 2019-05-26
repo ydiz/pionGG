@@ -39,5 +39,6 @@ cuth_calculate_avg.cc
 !integral/*.cc
 !integral/*.h
 
+!form_factor
 !form_factor/*.cc
 !form_factor/*.h
