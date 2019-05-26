@@ -32,6 +32,8 @@ void init_para(int argc, char **argv, Jack_para &para)
   para.traj_num = (para.traj_end - para.traj_start) / para.traj_sep + 1;
   para.time_cutoff_num = para.time_cutoff_end - para.time_cutoff_start + 1;
 
+  para.target = para.lep_para.target;
+
   if(vm.count("help")) {
     std::cout << desc << std::endl;
     exit(0);

@@ -22,6 +22,7 @@ double f1(double p, void *params) {
   return - 0.5 * std::exp(-p * w0) * (cos_pw - sin_pw / (p * w)); // f should not contain the pole term if using qaws
 }
 
+// p.s. integrate_qawc will add a term (p - pole) to the denominator; DO NOT write this factor in the function
 double f2(double p, void *params) {
   std::vector<double> paras = *(std::vector<double> *)params;
   double w = paras[0];

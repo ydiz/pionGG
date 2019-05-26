@@ -68,10 +68,20 @@ std::vector<RealD> jack_stats(const std::vector<RealD>& data)
 
 struct Jack_para {
 
+  std::string target;
   int traj_start, traj_end, traj_sep, traj_num;
   int time_cutoff_start, time_cutoff_end, time_cutoff_num;
   Lep_para lep_para;
+
+  std::vector<double> get_result_with_cutoff(const LatticePGG &hadronic, const LatticePGG &leptonic);
+  
 };
+
+std::vector<double> Jack_para::get_result_with_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic) {
+  if(target=="form_factor") return form_factor(three_point, leptonic);
+  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_para.lep_coef());
+  else assert(0);
+}
 
 
 

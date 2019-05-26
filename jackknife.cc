@@ -45,7 +45,8 @@ int main(int argc, char* argv[])
     std::string file = three_point_exact_path(traj);
     read_cheng_PGG(three_point, file);
 
-    std::vector<double> cutoffs = calculate_decay_rate_cutoff(three_point, leptonic, para.lep_para.lep_coef());
+    // std::vector<double> cutoffs = calculate_decay_rate_cutoff(three_point, leptonic, para.lep_para.lep_coef());
+    std::vector<double> cutoffs = para.get_result_with_cutoff(three_point, leptonic);
 
     for(int time_cutoff = para.time_cutoff_start; time_cutoff <= para.time_cutoff_end; ++time_cutoff) {
       int t_idx = time_cutoff - para.time_cutoff_start;
