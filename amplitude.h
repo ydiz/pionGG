@@ -54,7 +54,7 @@ std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, c
 	double me = 511000;
   // double Z_V = 0.73;
   double Z_V = 0.7260;
-  double hadron_coeff = 1./ (3 * std::sqrt(2)) * Z_V * Z_V * std::sqrt(2 * M_PION) / (17853.18 / std::sqrt(32*32*32.)); // 17853.18 is <pi | pi(0) | 0> ; normalization factor for pion operator
+  double hadron_coeff = 1./ (3 * std::sqrt(2)) * Z_V * Z_V * std::sqrt(2 * M_PION) / (17853.18 / std::sqrt(32*32*32.)); // 17853.18 = sqrt(<pi(0) pi(t)> exp(Mpi * |t|)) = <pi | pi(0) | 0> / sqrt(2 Mpi); normalization factor for pion operator
   // double lepton_coeff = 1. / (2 * M_PI) / 137. / 137. * me;
   std::vector<double> amplitude_M(ret.size());
   for(int i=0; i<ret.size(); ++i) amplitude_M[i] = hadron_coeff * lepton_coeff * ret[i];
