@@ -3,7 +3,8 @@
 #define LEPTONIC_TIME_LIMIT 16
 #define LEPTONIC_SPACE_LIMIT 16
 
-#define M_PION 0.139474 
+// #define M_PION 0.139474 
+#define M_PION 0.1392644 
 #define M_L  0.000528 // calculate by 0.000511 * 0.139474 / 0.13497
 
 std::string gauge_transform_path_32D(int traj) {

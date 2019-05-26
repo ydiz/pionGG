@@ -48,9 +48,10 @@ int main(int argc, char* argv[])
     // std::vector<double> cutoffs = calculate_decay_rate_cutoff(three_point, leptonic, para.lep_para.lep_coef());
     std::vector<double> cutoffs = para.get_result_with_cutoff(three_point, leptonic);
 
+    int traj_idx = (traj - para.traj_start)/para.traj_sep;
     for(int time_cutoff = para.time_cutoff_start; time_cutoff <= para.time_cutoff_end; ++time_cutoff) {
       int t_idx = time_cutoff - para.time_cutoff_start;
-      jackknife_results[t_idx][(traj - para.traj_start)/para.traj_sep] = cutoffs[time_cutoff]; 
+      jackknife_results[t_idx][traj_idx] = cutoffs[time_cutoff]; 
     }
   }
 

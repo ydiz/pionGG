@@ -49,8 +49,7 @@ std::vector<double> form_factor(const LatticePGG &three_point, const LatticePGG 
   // }
 
 	LatticePGG hadronic(three_point._grid);
-	// hadronic = three_point * pp; // Do not need to shift hadronic part
-  hadronic = imag(hadronic); 
+  hadronic = imag(three_point); 
 
 	std::vector<double> ret = mult_HL_cutoff(hadronic, leptonic);
 

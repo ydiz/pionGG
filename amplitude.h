@@ -25,7 +25,8 @@ std::vector<double> mult_HL_cutoff(const LatticePGG &hadronic, const LatticePGG 
 
   std::vector<double> ret_real(T / 2 + 1);
   ret_real[0] = ret[0]()()().real();
-  for(int i=1; i<ret_real.size(); ++i) ret_real[i] = ret[i]()()().real() + ret[T-i]()()().real(); // add t and -t
+  ret_real[T/2] = ret[T/2]()()().real();
+  for(int i=1; i<ret_real.size()-1; ++i) ret_real[i] = ret[i]()()().real() + ret[T-i]()()().real(); // add t and -t
   
   std::vector<double> ret_cumulative(T / 2 + 1);
   ret_cumulative[0] = ret_real[0];
