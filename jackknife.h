@@ -3,24 +3,6 @@
 #include <Grid/Grid.h>
 #include "lep_para.h"
 
-// void calculate_jackknife(const std::vector<double> &jackknife_results){
-//
-//   int traj_num = jackknife_results.size();
-//
-//   double jackknife_avg = 0.;
-//   for(double x: jackknife_results) jackknife_avg += x;
-//   jackknife_avg /= double(traj_num);
-//
-//   double jackknife_error = 0.;
-//   for(double x: jackknife_results) jackknife_error += (x - jackknife_avg) * (x - jackknife_avg);
-//   jackknife_error = std::sqrt(jackknife_error * (double(traj_num) - 1.) / double(traj_num));
-//
-//   std::cout << "jackknife average: " << jackknife_avg << std::endl;
-//   std::cout << "jackknife error: " << jackknife_error << std::endl;
-//   std::cout << std::string(20, '*') << std::endl;
-//
-// }
-//
 namespace Grid{
 namespace QCD{
 
@@ -98,7 +80,7 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
 
 std::vector<double> Jack_para::get_result_with_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic) {
   if(target=="form_factor") return form_factor(three_point, leptonic);
-  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_para.lep_coef(), hadron_coeff);
+  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_para.lep_coef(), hadron_coeff, M_h);
   else assert(0);
 }
 

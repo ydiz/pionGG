@@ -40,7 +40,7 @@ double Lep_para::lep_coef() {
 void Lep_para::get_leptonic(LatticePGG &lat) {
   if(target == "real_CUBA3d" || target == "imag_CUBA3d") get_leptonic_CUBA3d(file_p1, file_p3, lat, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
   else if(target == "real") Grid::QCD::get_leptonic(file_p3, lat, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
-  else if(target == "imag_analytic") imag_part(lat);
+  else if(target == "imag_analytic") imag_part(lat, M_PION);
   else if(target == "form_factor") form_factor_integrand(lat); // technically this is not leptonic part; but for convience I put it in get_leptonic function
   else assert(0);
 }

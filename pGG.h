@@ -24,7 +24,7 @@ void print_grid_field_site(const T &field, const std::vector<int> coor) {
 }
 
 // translational factor
-void get_translational_factor(LatticeComplex &lat) {
+void get_translational_factor(LatticeComplex &lat, double Mpi) {
 
 	parallel_for(int ss=0; ss<lat._grid->lSites(); ss++){
     std::vector<int> lcoor, gcoor;
@@ -32,7 +32,8 @@ void get_translational_factor(LatticeComplex &lat) {
 
 		double val;
 		int xt = qlat::smod(gcoor[Tdir], lat._grid->_fdimensions[Tdir]);
-    val = std::exp( 0.5 * M_PION * xt); // translation factor
+    // val = std::exp( 0.5 * M_PION * xt); // translation factor
+    val = std::exp( 0.5 * Mpi * xt); // translation factor
 
 		typename LatticeComplex::vector_object::scalar_object m;
 		m()()() = Complex(val, 0.);

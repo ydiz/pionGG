@@ -43,12 +43,7 @@ int main(int argc, char* argv[])
 
     LatticePGG three_point(grid);
     para.get_three_point(three_point, traj);
-    // std::string file = three_point_exact_path(traj); 
-    // read_cheng_PGG(three_point, file); // read 
-    // std::string file = three_point_path_32IDF(traj);
-    // read_luchang_PGG(three_point, file); // FIXME: add selection of path and reading method to jack_para.
 
-    // std::vector<double> cutoffs = calculate_decay_rate_cutoff(three_point, leptonic, para.lep_para.lep_coef());
     std::vector<double> cutoffs = para.get_result_with_cutoff(three_point, leptonic);
 
     int traj_idx = (traj - para.traj_start)/para.traj_sep;

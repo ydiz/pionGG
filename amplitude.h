@@ -38,13 +38,12 @@ std::vector<double> mult_HL_cutoff(const LatticePGG &hadronic, const LatticePGG 
 
 // L_{mu nu}(w) = lepton_coeff * leptonic
 // H_{mu nu}(w) = <0| Jmu(w/2) Jnu(-w/2) |pi> = hadron_coeff * three piont function
-// std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff) {
-std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff, double hadron_coeff) {//double Mpi_lat, double Npi, double Z_V) {
+std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff, double hadron_coeff, double Mpi_lat) { 
 
 	static LatticeComplex pp(three_point._grid); 
   static bool pp_initialzed = false;
   if(!pp_initialzed) {
-    get_translational_factor(pp);// translational factor 
+    get_translational_factor(pp, Mpi_lat); // translational factor 
     pp_initialzed = true;
   }
 
@@ -54,9 +53,6 @@ std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, c
 
 	std::vector<double> ret = mult_HL_cutoff(hadronic, leptonic);
 
-  // double Z_V = 0.7260;
-  // double hadron_coeff = 1./ (3 * std::sqrt(2)) * Z_V * Z_V * 2. * Mpi_lat / Npi; // 17853.18 = sqrt(<pi(0) pi(t)> exp(Mpi * |t|)) = <pi | pi(0) | 0> / sqrt(2 Mpi); normalization factor for pion operator
-  // double hadron_coeff = 1./ (3 * std::sqrt(2)) * Z_V * Z_V * std::sqrt(2 * M_PION) / (17853.18 / std::sqrt(32*32*32.)); // 17853.18 = sqrt(<pi(0) pi(t)> exp(Mpi * |t|)) = <pi | pi(0) | 0> / sqrt(2 Mpi); normalization factor for pion operator
   std::vector<double> amplitude_M(ret.size());
   for(int i=0; i<ret.size(); ++i) amplitude_M[i] = hadron_coeff * lepton_coeff * ret[i];
 
@@ -66,7 +62,6 @@ std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, c
   double Gamma_coeff = 2.0 * beta / (16 * M_PI * Mpi); // the first factor 2.0 comes from adding two possible polarizations
 	// double Gamma = Gamma_coeff * amplitude_M * amplitude_M;
 
-	// double Gamma_photons = 7.75;
 	double Gamma_photons = 7.82;
 	// double R_real = Gamma / Gamma_photons;
 

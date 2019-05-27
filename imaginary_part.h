@@ -5,7 +5,7 @@
 namespace Grid {
 namespace QCD {
 
-void imag_part(LatticePGG &lat) {
+void imag_part(LatticePGG &lat, double Mpi_lat) {
 
 	parallel_for(int ss=0; ss<lat._grid->lSites(); ss++){
 
@@ -19,7 +19,8 @@ void imag_part(LatticePGG &lat) {
     double val;
     if(w==0) val = 0.;
     else {
-      double t = M_PION * 0.5 * w;
+      // double t = M_PION * 0.5 * w;
+      double t = Mpi_lat * 0.5 * w;
       double sin_t, cos_t;
       sincos(t, &sin_t, &cos_t);
       val = (1. / w) * 1. / t * (cos_t - sin_t / t);
