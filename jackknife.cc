@@ -42,8 +42,9 @@ int main(int argc, char* argv[])
   for(int traj = para.traj_start; traj <= para.traj_end; traj += para.traj_sep) {
 
     LatticePGG three_point(grid);
-    std::string file = three_point_exact_path(traj); 
-    read_cheng_PGG(three_point, file); // read 
+    para.get_three_point(three_point, traj);
+    // std::string file = three_point_exact_path(traj); 
+    // read_cheng_PGG(three_point, file); // read 
     // std::string file = three_point_path_32IDF(traj);
     // read_luchang_PGG(three_point, file); // FIXME: add selection of path and reading method to jack_para.
 
