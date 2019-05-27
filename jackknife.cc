@@ -1,7 +1,7 @@
 #include <Grid/Grid.h>
 #include <dirent.h>
-#include "constants_macro.h"
 #include "io.h"
+#include "constants_macro.h"
 #include "pGG.h"
 #include "amplitude.h"
 #include "qlat_wrapper/qlat_wrapper.h"
@@ -42,8 +42,10 @@ int main(int argc, char* argv[])
   for(int traj = para.traj_start; traj <= para.traj_end; traj += para.traj_sep) {
 
     LatticePGG three_point(grid);
-    std::string file = three_point_exact_path(traj);
-    read_cheng_PGG(three_point, file);
+    std::string file = three_point_exact_path(traj); 
+    read_cheng_PGG(three_point, file); // read 
+    // std::string file = three_point_path_32IDF(traj);
+    // read_luchang_PGG(three_point, file); // FIXME: add selection of path and reading method to jack_para.
 
     // std::vector<double> cutoffs = calculate_decay_rate_cutoff(three_point, leptonic, para.lep_para.lep_coef());
     std::vector<double> cutoffs = para.get_result_with_cutoff(three_point, leptonic);

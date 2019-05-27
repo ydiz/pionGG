@@ -15,6 +15,11 @@ std::string gauge_transform_path_24D(int traj) {
 	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/24D/wall-src/results/results=" + std::to_string(traj) + "/huge-data/gauge-transform";
 }
 
+
+std::string wall_path_32DF(int traj) {
+  return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32Dfine/wall-src/results/32Dfine-0.0001/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator";
+}
+
 std::string wall_path_32D_sloppy(int traj) {
 	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator";
 }
@@ -53,4 +58,18 @@ std::string three_point_exact_path(int traj) {
 	
 	return path;
 }
+
+
+
+std::string three_point_path_32IDF(int traj) {
+
+  std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/em-corr/results/32Dfine-0.0001/results="+ std::to_string(traj) + "/contraction-with-point/pion_gg/decay_cheng";
+
+  std::cout << path << std::endl;
+  assert(dirExists(path));
+	
+	return path;
+}
+
+
 

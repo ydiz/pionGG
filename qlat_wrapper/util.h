@@ -69,6 +69,32 @@ void grid_convert(Grid::QCD::LatticePGG& grid_pgg, const qlat::PionGGElemField& 
   }
 }
 
+// For luchang's three point function 
+void grid_convert(Grid::QCD::LatticePGG& grid_pgg, const qlat::FieldM<qlat::Complex, 16>& qlat_pgg)
+{
+  using namespace Grid;
+  using namespace Grid::QCD;
+  const qlat::Geometry& geo = qlat_pgg.geo;
+#pragma omp parallel for
+  for (long index = 0; index < geo.local_volume(); ++index) {
+    const qlat::Coordinate xl = geo.coordinate_from_index(index); // get  local coordinate
+    std::vector<int> coor = grid_convert(xl); // just copy the four components of xl to a vector<int>
+
+    qlat::Vector<qlat::Complex> qlat_pgg_site = qlat_pgg.get_elems_const(xl); // qlat_pgg_site is a vector of Complex; vector size is 16
+		assert(qlat_pgg_site.size()==16);
+		
+		PGGElem grid_pgg_site;
+		// assert(sizeof(qlat_pgg_site) == sizeof(grid_pgg_site));
+
+		// Complex *p_qlat = (Complex *)&qlat_pgg_site; // T is either ComplexF or ComplexD
+		// std::copy(p_qlat, p_qlat + 16, (Complex *)&grid_pgg_site);	
+		std::copy(qlat_pgg_site.data(), qlat_pgg_site.data() + 16, (Complex *)&grid_pgg_site);	
+
+    pokeLocalSite(grid_pgg_site, grid_pgg, coor);
+  }
+}
+
+
 void grid_convert(Grid::QCD::LatticeColourMatrix& grid_gt, const qlat::GaugeTransform& qlat_gt)
 {
   using namespace Grid;
@@ -181,6 +207,7 @@ void print_field(const T &field) {
 namespace Grid {
 namespace QCD {
 
+// for both wall and point propagators
 void read_qlat_propagator(LatticePropagator &lat, const std::string &path) {
 	qlat::Propagator4d qlat_prop;
 	dist_read_field_double_from_float(qlat_prop, path);
@@ -191,7 +218,13 @@ void read_cheng_PGG(LatticePGG &lat, const std::string &path) {
   qlat::PionGGElemField qlat_pgg;
   dist_read_field(qlat_pgg, path);
   grid_convert(lat, qlat_pgg);
+}
 
+void read_luchang_PGG(LatticePGG &lat, const std::string &path) {
+  // qlat::PionGGElemField qlat_pgg;
+  qlat::FieldM<Complex, 16> qlat_pgg;
+  qlat::dist_read_field_double(qlat_pgg, path);
+  grid_convert(lat, qlat_pgg);
 }
 
 }}
