@@ -9,7 +9,7 @@
 #include "io.h"
 #include "utils.h"
 
-#define M_PION 0.1392644 
+#define M_PION 0.139474
 
 namespace Grid {
 namespace QCD{

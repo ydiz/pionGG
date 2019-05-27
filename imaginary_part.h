@@ -19,7 +19,6 @@ void imag_part(LatticePGG &lat, double Mpi_lat) {
     double val;
     if(w==0) val = 0.;
     else {
-      // double t = M_PION * 0.5 * w;
       double t = Mpi_lat * 0.5 * w;
       double sin_t, cos_t;
       sincos(t, &sin_t, &cos_t);

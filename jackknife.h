@@ -1,7 +1,11 @@
 #pragma once
 
 #include <Grid/Grid.h>
-#include "lep_para.h"
+// #include "lep_para.h"
+#include "lep.h"
+#include "lep_CUBA3d.h"
+#include "imaginary_part.h"
+#include "form_factor.h"
 
 namespace Grid{
 namespace QCD{
@@ -50,26 +54,40 @@ std::vector<RealD> jack_stats(const std::vector<RealD>& data)
 
 struct Jack_para {
 
+  // hadronic part
   std::string ensemble;
   double M_h; // mass of pion/kaon in lattice unit
   double N_h; // normalization of wall src operator. N_h = <0 | pi(0) | pi>
   double Z_V;
   double hadron_coeff;
+
+  // leptonic part
   std::string target;
+  std::string file_p3;
+  std::string file_p1;
+  double lep_coeff;
+
   int traj_start, traj_end, traj_sep, traj_num;
   int time_cutoff_start, time_cutoff_end, time_cutoff_num;
-  Lep_para lep_para;
 
+  void get_leptonic(LatticePGG &lat);
   void get_three_point(LatticePGG &three_point, int traj);
   std::vector<double> get_result_with_cutoff(const LatticePGG &hadronic, const LatticePGG &leptonic);
   
 };
 
+void Jack_para::get_leptonic(LatticePGG &lat) {
+  if(target == "real_CUBA3d" || target == "imag_CUBA3d") get_leptonic_CUBA3d(file_p1, file_p3, lat, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
+  else if(target == "real") Grid::QCD::get_leptonic(file_p3, lat, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
+  else if(target == "imag_analytic") imag_part(lat, M_h);
+  else if(target == "form_factor") form_factor_integrand(lat, M_h); // technically this is not leptonic part; but for convience I put it in get_leptonic function
+  else assert(0);
+}
 
 void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
   if(ensemble == "Pion_32ID") {
     std::string file = three_point_exact_path(traj); 
-    read_cheng_PGG(three_point, file); // read 
+    read_cheng_PGG(three_point, file);
   }
   else if(ensemble == "Pion_32IDF") {
     std::string file = three_point_path_32IDF(traj);
@@ -79,8 +97,8 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
 }
 
 std::vector<double> Jack_para::get_result_with_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic) {
-  if(target=="form_factor") return form_factor(three_point, leptonic);
-  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_para.lep_coef(), hadron_coeff, M_h);
+  if(target=="form_factor") return form_factor(three_point, leptonic, hadron_coeff, M_h);
+  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff, M_h);
   else assert(0);
 }
 

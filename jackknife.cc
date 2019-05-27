@@ -10,7 +10,6 @@
 #include "lep.h"
 #include "lep_CUBA3d.h"
 
-
 #include "imaginary_part.h"
 
 
@@ -34,7 +33,7 @@ int main(int argc, char* argv[])
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
 
   LatticePGG leptonic(grid);
-  para.lep_para.get_leptonic(leptonic); // generate leptonic part
+  para.get_leptonic(leptonic); // generate leptonic part
 
   // two dimensaional jackknife results. dim1: time cutoff. dim2: traj_num
   std::vector<std::vector<double>> jackknife_results(para.time_cutoff_num, std::vector<double>(para.traj_num));

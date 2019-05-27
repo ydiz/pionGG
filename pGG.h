@@ -32,7 +32,6 @@ void get_translational_factor(LatticeComplex &lat, double Mpi) {
 
 		double val;
 		int xt = qlat::smod(gcoor[Tdir], lat._grid->_fdimensions[Tdir]);
-    // val = std::exp( 0.5 * M_PION * xt); // translation factor
     val = std::exp( 0.5 * Mpi * xt); // translation factor
 
 		typename LatticeComplex::vector_object::scalar_object m;
