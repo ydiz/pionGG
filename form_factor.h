@@ -47,8 +47,9 @@ std::vector<double> form_factor(const LatticePGG &three_point, const LatticePGG 
 
 	std::vector<double> ret = mult_HL_cutoff(hadronic, leptonic);
 
-  double Z_V = 0.7260;
-  double other_coeff = 8 * M_PI * M_PI * 0.092424 / Mpi_lat / Mpi_lat / Mpi_lat / Mpi_lat; // F_\pi = 0.092424
+  double Fpi = 93. * (Mpi_lat / 135.); // Fpi = 93MeV. Convert Fpi to lattice unit
+  // double other_coeff = 8 * M_PI * M_PI * 0.092424 / Mpi_lat / Mpi_lat / Mpi_lat / Mpi_lat; // F_\pi = 0.092424
+  double other_coeff = 8 * M_PI * M_PI * Fpi / Mpi_lat / Mpi_lat / Mpi_lat / Mpi_lat; // F_\pi = 0.092424
   std::vector<double> F(ret.size());
   for(int i=0; i<ret.size(); ++i) F[i] = hadron_coeff * other_coeff * ret[i];
 
