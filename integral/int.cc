@@ -6,10 +6,15 @@
 #include <iostream>
 #include <iomanip>
 
-#include "../constants_macro.h"
 #include "cuba_wrapper.h"
 
+// For different ensembles, only need to change M_PION
+// #define M_PION 0.139474
+#define M_PION 0.10025
 
+constexpr double me = 511000;
+constexpr double Mpi = 135000000;
+constexpr double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi));
 
 double f1(double p, void *params) {
   std::vector<double> paras = *(std::vector<double> *)params;
@@ -56,7 +61,7 @@ void integrate_qawc(T f, std::vector<double> params, double lower, double upper,
 struct Func {
 
   double p_interval;
-	double pe = std::sqrt(0.5 * M_PION * 0.5 * M_PION - M_L *M_L);
+	double pe = 0.5 * M_PION * beta;
   std::vector<double> paras; // [w, w0]
 
   std::vector<double> operator()(const std::vector<double>& v) const;
@@ -99,13 +104,13 @@ gsl_integration_workspace * workspace = gsl_integration_workspace_alloc (1000);
 
 int main (void)
 {
+  std::cout << "M_H (in lattice unit): " << M_PION << std::endl;
+  std::cout << std::string(30, '*') << std::endl;
   
   double ret1, ret2, ret3, error;
   double lower = 0.00001, upper = 30, epsrel = 1e-4;
 
-  double beta = std::sqrt(1 - 4*M_L*M_L / (M_PION*M_PION));
   double log_beta = std::log((1 + beta) / (1 - beta));
-  // double beta_coeff = log_beta / beta;
 
   Func f3;
   f3.p_interval = upper;
@@ -123,9 +128,7 @@ int main (void)
         integrate_qawc(f1, params, lower, upper, M_PION/2., 0, epsrel, workspace, ret1, error);
         integrate_qags(f2, params, lower, upper, 0, epsrel, workspace, ret2, error);
         ret3 = integrate_CUBA(f3, epsrel);
-        // ret = - std::exp(0.5 * M_PION * w0) / w / w * M_PI / 4. / (f3.pe * M_PION) * beta_coeff * ret1 
-        //       + std::exp(-0.5 * M_PION * w0) / w / w * M_PI / 4. / (f3.pe * M_PION) * beta_coeff * ret2
-        //       + M_PI / 2.0 / w / w * ret3;
+
         ret = - std::exp(0.5 * M_PION * w0) / w / w * M_PI / (f3.pe * M_PION) * log_beta * ret1 
               + std::exp(-0.5 * M_PION * w0) / w / w * M_PI / (f3.pe * M_PION) * log_beta * ret2
               + 2.0 * M_PI / w / w * ret3;
