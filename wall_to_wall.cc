@@ -46,15 +46,12 @@ using namespace Grid::QCD;
 
 
 std::vector<int> gcoor({32, 32, 32, 64});
-// std::vector<int> mpi_coor({1, 1, 1, 8});
 
 int main(int argc, char* argv[])
 {
   Grid_init(&argc, &argv);
   std::vector<int> mpi_coor = GridDefaultMpi();
   begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3]));
-  // begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3])); // begin is defined in qlat/mpi.h
-  // Grid_init(&argc, &argv);
 
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor); 
 	LatticePropagator prop(grid);
@@ -71,15 +68,9 @@ int main(int argc, char* argv[])
 	std::cout << "traj_sep: " << traj_sep << std::endl;
 	std::cout << "traj_num: " << traj_num << std::endl;
 	std::cout << std::string(20, '*') << std::endl;
-	// std::vector<int> trajs(traj_num);
-	// for(int i=0; i<trajs.size(); ++i) trajs[i] = traj_start + i * 10;
-
-	// cout << "trajs: " << endl;
-	// cout << trajs << endl;
 
 	std::vector<double> average_corr(gcoor[3], 0.);
 
-	// for(int traj: trajs) {
   for(int traj = traj_start; traj <= traj_end; traj += traj_sep) {
 
 		std::vector<int> ts;

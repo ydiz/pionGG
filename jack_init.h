@@ -40,9 +40,12 @@ void init_para(int argc, char **argv, Jack_para &para)
     para.Z_V = 0.7260;
   }
   else if(para.ensemble == "Pion_32IDF") {
-    para.M_h = 0.10025; // FIXME
-    para.N_h = 67.232746; // FIXME
-    para.Z_V = 0.6885; // FIXME
+    para.M_h = 0.10468;
+    para.N_h = 69.268015;
+    para.Z_V = 0.68339;
+    // para.M_h = 0.10025;
+    // para.N_h = 67.232746;
+    // para.Z_V = 0.6885;
   }
   else assert(0);
 
@@ -54,8 +57,8 @@ void init_para(int argc, char **argv, Jack_para &para)
   if(para.target=="real") para.lep_coeff = 2. / (M_PI) / 137. / 137. * me;
   else if(para.target=="real_CUBA3d") para.lep_coeff = 1. / (2 * M_PI) / 137. / 137. * me;
   else if(para.target=="imag_analytic") {
-    double Mpi = 135000000;
-    double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi));
+    double Mpi = 135000000;  
+    double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi)); //FIXME: change this for kaon -> mu+ mu-
     para.lep_coeff = me / para.M_h * M_PI / 137. / 137. * (1. / beta * std::log((1 + beta) / (1 - beta)));
   }
   else if(para.target=="imag_CUBA3d") para.lep_coeff = 1. / 2. / 137. / 137. * me;

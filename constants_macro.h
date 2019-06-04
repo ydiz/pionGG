@@ -3,6 +3,10 @@
 #define LEPTONIC_TIME_LIMIT 16
 #define LEPTONIC_SPACE_LIMIT 16
 
+std::string wall_path_strange_32D(int traj, int t) {
+  return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/wall-src-strange/results/32D-0.00107/results="+ std::to_string(traj) + "/huge-data/wall_src_propagator/strange ; t=" + std::to_string(t);
+}
+
 std::string gauge_transform_path_32D(int traj) {
 	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/gauge-transform";
 }
