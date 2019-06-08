@@ -1,51 +1,90 @@
 #include <qlat/qlat.h>
 #include <qlat/grid.h>
-// #include "cheng.h"
-// #include "util.h"
 
 #include "qlat_wrapper/qlat_wrapper.h"
-
 #include "constants_macro.h"
 
 #include <dirent.h>
 #include <sys/stat.h>
+
+namespace Grid {
+namespace QCD {
+
+std::vector<double> kaon_corr(int traj, GridBase *grid) {
+  int T = grid->_fdimensions[Tdir];
+	LatticePropagator prop_d(grid);
+	LatticePropagator prop_s(grid);
+
+  std::vector<double> corr(T, 0.);
+
+  for(int t=0; t<T; ++t) {
+
+    std::string path_d = wall_path_ud_32D(traj, t);
+    std::string path_s = wall_path_strange_32D(traj, t);
+    read_qlat_propagator(prop_d, path_d);
+    read_qlat_propagator(prop_s, path_s);
+
+    std::vector<typename LatticePropagator::vector_object::scalar_object> slice_sum_d;
+    sliceSum(prop_d, slice_sum_d, Tdir);
+    std::vector<typename LatticePropagator::vector_object::scalar_object> slice_sum_s;
+    sliceSum(prop_s, slice_sum_s, Tdir);
+
+    for(int i=0; i<T; ++i) {
+      int sep = (i < t) ? i - t + T : i - t;
+      double tmp = TensorRemove(trace(slice_sum_d[i] * adj(slice_sum_s[i]))).real();
+      corr[sep] += tmp;
+    }
+  }
+
+  for(auto &x: corr) x /= T;
+  std::cout << "Wall to Wall Correlator[traj=" << traj << "]:"<< std::endl;
+  std::cout << corr << std::endl;
+
+  return corr;
+}
+
+
+std::vector<double> pion_corr(int traj, GridBase *grid) {
+  int T = grid->_fdimensions[Tdir];
+	LatticePropagator prop(grid);
+
+  std::vector<double> corr(T, 0.);
+
+  for(int t=0; t<T; ++t) {
+
+    // std::string path = wall_path_ud_32D(traj, t);
+    std::string path = wall_path_24ID(traj, t);
+    read_qlat_propagator(prop, path);
+
+    std::vector<typename LatticePropagator::vector_object::scalar_object> slice_sum;
+    sliceSum(prop, slice_sum, Tdir);
+
+    for(int i=0; i<T; ++i) { // slice_sum[i] = P(i, t)
+      int sep = (i < t) ? i - t + T : i - t;
+      double tmp = TensorRemove(trace(slice_sum[i] * adj(slice_sum[i]))).real();
+      corr[sep] += tmp;
+    }
+  }
+
+  for(auto &x: corr) x /= T;
+  std::cout << "Wall to Wall Correlator[traj=" << traj << "]:"<< std::endl;
+  std::cout << corr << std::endl;
+
+  return corr;
+}
+
+
+}}
+
 
 using namespace qlat;
 using namespace std;
 using namespace Grid;
 using namespace Grid::QCD;
 
-// int get_t(const std::string &path) {
-// 	return std::stoi(path.substr(path.find("=") + 1));
-// }
 
-
-// void get_ts(const std::string &path, std::vector<int> &ts, std::map<int, std::string> &subdirs) {
-//
-// 		ts.clear();
-// 		subdirs.clear();
-//     DIR *dir;
-//     dir = opendir(path.c_str());
-//     assert(dir!=NULL); // make sure directory exists
-//     struct dirent *entry;
-//
-//     std::string subdir_name;
-//     while ((entry = readdir (dir)) != NULL) {
-//       // printf ("%s\n", entry->d_name);
-//       subdir_name = std::string(entry->d_name);
-// 			if(subdir_name.substr(0, 2) == "t=") {
-// 				int t = get_t(subdir_name); 
-// 				ts.push_back(t);
-// 				subdirs.insert(std::pair<int, std::string>(t, path + "/" + subdir_name));
-// 			}
-//     }
-//     closedir (dir);
-//
-//     std::sort(ts.begin(), ts.end());
-// }
-
-
-std::vector<int> gcoor({32, 32, 32, 64});
+// std::vector<int> gcoor({32, 32, 32, 64});
+std::vector<int> gcoor({24, 24, 24, 64});
 
 int main(int argc, char* argv[])
 {
@@ -56,10 +95,9 @@ int main(int argc, char* argv[])
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor); 
 	LatticePropagator prop(grid);
 
-
-	// int traj_start = 680, traj_num = 70;
-	int traj_start = 200, traj_end = 430, traj_sep = 10;
-	// int traj_start = 200, traj_end = 210, traj_sep = 10;
+	// int traj_start = 200, traj_end = 430, traj_sep = 10; // for 32IDF
+	// int traj_start = 1200, traj_end = 1200, traj_sep = 10; 
+	int traj_start = 2260, traj_end = 2640, traj_sep = 10; // for 24ID
   int traj_num = (traj_end - traj_start) / traj_sep + 1;
 
 	std::cout << std::string(20, '*') << std::endl;
@@ -73,53 +111,13 @@ int main(int argc, char* argv[])
 
   for(int traj = traj_start; traj <= traj_end; traj += traj_sep) {
 
-		std::vector<int> ts;
-		std::map<int, std::string> subdirs;
-		// std::string wall_src_path = wall_path_32D_sloppy(traj);
-		std::string wall_src_path = wall_path_32DF(traj);
-		get_ts(wall_src_path, ts, subdirs);
-
-		std::vector<double> corr(gcoor[3], 0.);
-
-		// for(const auto &t: ts) {
-		for(int t=0; t<gcoor[3]; ++t) {
-      std::string path_t = wall_src_path + "/t=" + std::to_string(t);
-      // cout << "t of wall src: " << t << endl;
-      // cout << "directory name: " << subdirs[t] << endl;
-
-      assert(dirExists(path_t));
-      read_qlat_propagator(prop, path_t);
-      // assert(dirExists(subdirs[t]));
-      //
-      // qlat::Propagator4d qlat_prop;
-      // dist_read_field_double_from_float(qlat_prop, subdirs[t]);
-      // // std::cout << "Finished reading propagator!" << std::endl;
-      // // std::vector<int> coor{1,13,23,47};
-      // // print_qlat_field_site(qlat_prop, coor);
-      //
-      // grid_convert(prop, qlat_prop);
-      // print_grid_field_site(prop, coor);
-
-      std::vector<typename LatticePropagator::vector_object::scalar_object> slice_sum;
-      sliceSum(prop, slice_sum, Tdir);
-
-      for(int i=0; i<slice_sum.size(); ++i) {
-        int sep = (i < t) ? i - t + gcoor[3] : i - t;
-        double tmp = TensorRemove(trace(slice_sum[i] * adj(slice_sum[i]))).real();
-        corr[sep] += tmp;
-      }
-
-		}
-
-		for(auto &x: corr) x /= gcoor[3];
-		cout << "Wall to Wall Correlator[traj=" << traj << "]:"<< endl;
-		cout << corr << endl;
-
+    std::vector<double> corr = pion_corr(traj, grid);
+    // std::vector<double> corr = kaon_corr(traj, grid);
 		for(int i=0; i<corr.size(); ++i) average_corr[i] += corr[i];
 	}
 
-	for(auto &x: average_corr) x /= traj_num; // trajs.size();
-	cout << std::string('*', 30) << endl;
+	for(auto &x: average_corr) x /= traj_num;
+	cout << std::string(30, '*') << endl;
 	cout << "average wall to wall correlator over "<< traj_num << " trajectoies:" << endl;
 	cout << average_corr << endl;
 

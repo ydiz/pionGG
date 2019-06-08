@@ -18,7 +18,8 @@ using namespace Grid;
 using namespace Grid::QCD;
 using namespace qlat;
 
-const std::vector<int> gcoor({32, 32, 32, 64});
+// const std::vector<int> gcoor({32, 32, 32, 64});
+const std::vector<int> gcoor({24, 24, 24, 64});
 
 int main(int argc, char* argv[])
 {

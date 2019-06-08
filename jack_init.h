@@ -39,13 +39,16 @@ void init_para(int argc, char **argv, Jack_para &para)
     para.N_h = 52.089753;
     para.Z_V = 0.7260;
   }
+  else if(para.ensemble == "Pion_24ID") {
+    para.M_h = 0.13975;
+    para.N_h = 52.089753; //FIXME
+    para.Z_V = 0.7267;
+  }
+
   else if(para.ensemble == "Pion_32IDF") {
     para.M_h = 0.10468;
     para.N_h = 69.268015;
     para.Z_V = 0.68339;
-    // para.M_h = 0.10025;
-    // para.N_h = 67.232746;
-    // para.Z_V = 0.6885;
   }
   else assert(0);
 
