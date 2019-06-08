@@ -42,3 +42,7 @@ cuth_calculate_avg.cc
 !form_factor
 !form_factor/*.cc
 !form_factor/*.h
+
+!hadron_utils
+!hadron_utils/*.cc
+!hadron_utils/*.h

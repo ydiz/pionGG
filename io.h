@@ -10,40 +10,40 @@ bool dirExists(const std::string &path){
 }
 
 
-std::vector<int> get_xg(const std::string &path) {
-
-	std::stringstream ss;
-	ss.str(path.substr(path.find("(") + 1));
-
-	std::vector<int> ret(4);
-	for(int &x: ret) { 
-		ss >> x; 
-		ss.ignore(); // extract comma and ignore it
-	}
-
-	return ret;
-}
-
-
-void get_xgs(const std::string &path, std::vector<std::vector<int>> &xgs, std::map<std::vector<int>, std::string> &subdirs) {
-	DIR *dir;
-	dir = opendir(path.c_str());
-	assert(dir!=NULL); // make sure directory exists
-	struct dirent *entry;
-
-	std::string subdir_name;
-	while ((entry = readdir (dir)) != NULL) {
-		// printf ("%s\n", entry->d_name);
-		subdir_name = std::string(entry->d_name);
-		if(subdir_name.substr(0, 3) == "xg=" && subdir_name.substr(subdir_name.find("type"), 6) == "type=0" && subdir_name.substr(subdir_name.find("accuracy"), 10) == "accuracy=0") {
-			std::vector<int> xg = get_xg(subdir_name); 
-			xgs.push_back(xg);
-			subdirs.insert(std::pair<std::vector<int>, std::string>(xg, path + "/" + subdir_name));
-		}
-	}
-	closedir (dir);
-}
-
+// std::vector<int> get_xg(const std::string &path) {
+//
+// 	std::stringstream ss;
+// 	ss.str(path.substr(path.find("(") + 1));
+//
+// 	std::vector<int> ret(4);
+// 	for(int &x: ret) { 
+// 		ss >> x; 
+// 		ss.ignore(); // extract comma and ignore it
+// 	}
+//
+// 	return ret;
+// }
+//
+//
+// void get_xgs(const std::string &path, std::vector<std::vector<int>> &xgs, std::map<std::vector<int>, std::string> &subdirs) {
+// 	DIR *dir;
+// 	dir = opendir(path.c_str());
+// 	assert(dir!=NULL); // make sure directory exists
+// 	struct dirent *entry;
+//
+// 	std::string subdir_name;
+// 	while ((entry = readdir (dir)) != NULL) {
+// 		// printf ("%s\n", entry->d_name);
+// 		subdir_name = std::string(entry->d_name);
+// 		if(subdir_name.substr(0, 3) == "xg=" && subdir_name.substr(subdir_name.find("type"), 6) == "type=0" && subdir_name.substr(subdir_name.find("accuracy"), 10) == "accuracy=0") {
+// 			std::vector<int> xg = get_xg(subdir_name); 
+// 			xgs.push_back(xg);
+// 			subdirs.insert(std::pair<std::vector<int>, std::string>(xg, path + "/" + subdir_name));
+// 		}
+// 	}
+// 	closedir (dir);
+// }
+//
 int get_t(const std::string &path) {
 	return std::stoi(path.substr(path.find("=") + 1));
 }
