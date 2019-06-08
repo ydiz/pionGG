@@ -97,7 +97,7 @@ int main(int argc, char* argv[])
 
 	// int traj_start = 200, traj_end = 430, traj_sep = 10; // for 32IDF
 	// int traj_start = 1200, traj_end = 1200, traj_sep = 10; 
-	int traj_start = 2260, traj_end = 2640, traj_sep = 10; // for 24ID
+	int traj_start = 2370, traj_end = 2510, traj_sep = 10; // for 24ID
   int traj_num = (traj_end - traj_start) / traj_sep + 1;
 
 	std::cout << std::string(20, '*') << std::endl;

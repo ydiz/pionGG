@@ -3,6 +3,14 @@
 #define LEPTONIC_TIME_LIMIT 16
 #define LEPTONIC_SPACE_LIMIT 16
 
+std::string point_path_strange_24ID(int traj) {
+  std::string path = "/home/ljin/application/Public/Muon-GM2-cc/jobs/32D/discon-1/results/prop-hvp ; results=" + std::to_string(traj) + "/huge-data/prop-point-src";
+  assert(dirExists(path));
+  return path;
+}
+
+
+
 std::string wall_path_strange_32D(int traj, int t) {
   std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/wall-src-strange/results/32D-0.00107/results="+ std::to_string(traj) + "/huge-data/wall_src_propagator/strange ; t=" + std::to_string(t);
   assert(dirExists(path));

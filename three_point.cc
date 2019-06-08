@@ -1,7 +1,6 @@
 #include "three_point.h"
 
 std::vector<int> gcoor({32, 32, 32, 64});
-std::vector<int> mpi_coor({1, 1, 1, 8});
 
 using namespace std;
 using namespace qlat;
@@ -11,10 +10,14 @@ using namespace Grid::QCD;
 
 int main(int argc, char* argv[])
 {
-  begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3])); // begin is defined in qlat/mpi.h
   Grid_init(&argc, &argv);
-
-  GridCartesian *grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor); 
+  std::vector<int> mpi_coor = GridDefaultMpi();
+  begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3]));
+  GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
+  // begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3])); // begin is defined in qlat/mpi.h
+  // Grid_init(&argc, &argv);
+  //
+  // GridCartesian *grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), GridDefaultMpi()); 
 
 	// int traj_start = 680, traj_num = 70;
 	// std::vector<int> trajs(traj_num);
