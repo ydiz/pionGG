@@ -93,6 +93,10 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
     std::string file = three_point_path_32IDF(traj);
     read_luchang_PGG(three_point, file); // FIXME: change this after cheng generated his three point functions
   }
+  else if(ensemble == "Pion_24ID") {
+    std::string file = three_point_24ID(traj);
+    read_cheng_PGG(three_point, file); // FIXME: change this after cheng generated his three point functions
+  }
   else assert(0);
 }
 
