@@ -46,3 +46,6 @@ cuth_calculate_avg.cc
 !hadron_utils
 !hadron_utils/*.cc
 !hadron_utils/*.h
+
+
+*.swp
