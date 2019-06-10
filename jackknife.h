@@ -66,7 +66,10 @@ struct Jack_para {
   std::string file_p3;
   std::string file_p1;
   double lep_coeff;
+  double leptonic_space_limit;
+  double leptonic_time_limit;
 
+  std::vector<int> lat_size;
   int traj_start, traj_end, traj_sep, traj_num;
   int time_cutoff_start, time_cutoff_end, time_cutoff_num;
 

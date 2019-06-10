@@ -10,11 +10,26 @@ namespace po = boost::program_options;
 namespace Grid {
 namespace QCD {
 
+
+void cmdOptionIntVector(const std::string &str,std::vector<int> &vec)
+{
+  vec.resize(0);
+  std::stringstream ss(str);
+  int i;
+  while (ss >> i){
+    vec.push_back(i);
+    if(std::ispunct(ss.peek()))
+      ss.ignore();
+  }
+  return;
+}
+
 void init_para(int argc, char **argv, Jack_para &para)
 {
   po::options_description desc("jackknife options");
   desc.add_options()("help", "help message")
                     ("ensemble", po::value<std::string>(&para.ensemble))
+                    ("lat_size", po::value<std::string>()->multitoken())
                     ("traj_start", po::value<int>(&para.traj_start)->default_value(1000))
                     ("traj_end", po::value<int>(&para.traj_end)->default_value(1000))
                     ("traj_sep", po::value<int>(&para.traj_sep)->default_value(10))
@@ -30,6 +45,11 @@ void init_para(int argc, char **argv, Jack_para &para)
   po::store(po::parse_config_file<char>("jack_init.ini", desc), vm);
   po::notify(vm);
 
+  /////////////////////////////////////////////
+
+  cmdOptionIntVector(vm["lat_size"].as<std::string>(), para.lat_size);
+
+
   para.traj_num = (para.traj_end - para.traj_start) / para.traj_sep + 1;
   para.time_cutoff_num = para.time_cutoff_end - para.time_cutoff_start + 1;
 
@@ -41,7 +61,7 @@ void init_para(int argc, char **argv, Jack_para &para)
   }
   else if(para.ensemble == "Pion_24ID") {
     para.M_h = 0.13975;
-    para.N_h = 52.089753; //FIXME
+    para.N_h = 51.561594;
     para.Z_V = 0.7267;
   }
 
@@ -77,6 +97,8 @@ void init_para(int argc, char **argv, Jack_para &para)
     exit(0);
   }
 
+  assert(para.lat_size.size()==4);
+
   /////////////////////////////////////
 	std::cout << std::string(20, '*') << std::endl;
   std::cout << "M_h: " << para.M_h << std::endl;
@@ -87,6 +109,7 @@ void init_para(int argc, char **argv, Jack_para &para)
 	std::cout << "file_p3: " << para.file_p3 << std::endl;
 	std::cout << "file_p1: " << para.file_p1 << std::endl;
 	std::cout << std::string(20, '*') << std::endl;
+	std::cout << "lat_size: " << para.lat_size << std::endl;
 	std::cout << "traj_start: " << para.traj_start << std::endl;
 	std::cout << "traj_end: " << para.traj_end << std::endl;
 	std::cout << "traj_sep: " << para.traj_sep << std::endl;

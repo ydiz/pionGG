@@ -19,7 +19,7 @@ using namespace Grid::QCD;
 using namespace qlat;
 
 // const std::vector<int> gcoor({32, 32, 32, 64});
-const std::vector<int> gcoor({24, 24, 24, 64});
+// const std::vector<int> gcoor({24, 24, 24, 64});
 
 int main(int argc, char* argv[])
 {
@@ -31,7 +31,8 @@ int main(int argc, char* argv[])
   Jack_para para;
   init_para(argc, argv, para);
 
-  GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
+  // GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
+  GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(para.lat_size, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
 
   LatticePGG leptonic(grid);
   para.get_leptonic(leptonic); // generate leptonic part

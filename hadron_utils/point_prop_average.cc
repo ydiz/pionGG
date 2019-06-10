@@ -34,9 +34,6 @@ void get_xgs(const std::string &path, std::vector<std::vector<int>> &xgs, std::m
 	closedir (dir);
 }
 
-
-
-
 std::vector<int> gcoor({32, 32, 32, 64});
 
 using namespace std;
@@ -51,7 +48,6 @@ int main(int argc, char* argv[])
   std::vector<int> mpi_coor = GridDefaultMpi();
   begin(&argc, &argv, Coordinate(mpi_coor[0], mpi_coor[1], mpi_coor[2], mpi_coor[3]));
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
-
 
 	// int traj_start = 680, traj_num = 70;
 	// std::vector<int> trajs(traj_num);
@@ -72,25 +68,26 @@ int main(int argc, char* argv[])
     // read_wall_src_props(wall_src_path, gauge_transform_path, wall_props);
 
 		std::vector<std::vector<int>> xgs;
-		std::map<std::vector<int>, std::string> point_subdirs;
+		std::map<std::vector<int>, std::string> paths;
 		std::string point_src_path = point_path_32D(traj);
-		get_xgs(point_src_path, xgs, point_subdirs);
+		get_xgs(point_src_path, xgs, paths);
 		// xgs.clear(); xgs.push_back({0, 4, 2, 6});
 
 		for(const auto &xg: xgs) {
 
-			cout << "source point: " << xg << endl;
-			cout << "path: " << point_subdirs[xg] << endl;
-			// LatticePropagator point_prop(grid);
-			// read_qlat_propagator(point_prop, point_subdirs[xg]);
-			// std::cout << "Finished reading point propagator!" << std::endl;
-      //
-			// for(int mu=0; mu<4; ++mu) ret = Cshift(ret, mu, xg[mu]);
+			cout << GridLogMessage << "source point: " << xg << endl;
+			// cout << "path: " << point_subdirs[xg] << endl;
+			LatticePropagator prop(grid);
+			read_qlat_propagator(prop, paths[xg]);
+
+			for(int mu=0; mu<4; ++mu) prop = Cshift(prop, mu, xg[mu]);
+      average += prop;
 		}
 
+    average = average * (1. / double(xgs.size()));
+    writeScidac(average, "point." + std::to_string(traj));
+
 	}
-
-
   end();
 
   return 0;

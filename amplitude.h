@@ -35,13 +35,6 @@ std::vector<double> mult_HL_cutoff(const LatticePGG &hadronic, const LatticePGG 
   //   }
   // }
 
-
-  // print_grid_field_site(tmp, std::vector<int>{1,0,0,0});
-  // tmp = abs(tmp);
-  // print_grid_field_site(tmp, std::vector<int>{1,0,0,0});
-  // std::cout << tmp << std::endl;
-  // assert(0);
-
   int T = hadronic._grid->_fdimensions[Tdir];
 
   std::vector<iSinglet<Complex>> ret(T);
