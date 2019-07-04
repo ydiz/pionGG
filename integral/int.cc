@@ -13,24 +13,28 @@
 // w_0 from -T_LIMIT to +T_LIMIT
 // target determines the value of beta
 
+// // For now, my L_LIMIT is always L / 2;
+
 // ================= physical parameters ========================
 
+// #define M_PION 0.13975 // 24ID
 // #define M_PION 0.139474 // 32ID
 // #define M_PION 0.10468 // 32IDF
-#define M_PION 0.13975 // 24ID
+#define M_PION 0.08049 // 48I
 
-#define L_LIMIT 12
-// #define L_LIMIT 16 
 
-#define T_LIMIT 16
+// #define L_LIMIT 12
+// #define L_LIMIT 16  
+#define L_LIMIT 24 
+
+// #define T_LIMIT 16
+#define T_LIMIT 24
 
 const std::string target("Pion");
 
 // ================ integration parameters ===================
 const double upper = 50; // = 30;
 const double epsrel = 1e-6; // = 1e-4;
-
-
 
 //================= code ===============================
 
