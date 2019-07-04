@@ -1,15 +1,10 @@
 #pragma once
 
-#define LEPTONIC_TIME_LIMIT 16
-#define LEPTONIC_SPACE_LIMIT 16
-
 std::string point_path_strange_24ID(int traj) {
   std::string path = "/home/ljin/application/Public/Muon-GM2-cc/jobs/32D/discon-1/results/prop-hvp ; results=" + std::to_string(traj) + "/huge-data/prop-point-src";
   assert(dirExists(path));
   return path;
 }
-
-
 
 std::string wall_path_strange_32D(int traj, int t) {
   std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/wall-src-strange/results/32D-0.00107/results="+ std::to_string(traj) + "/huge-data/wall_src_propagator/strange ; t=" + std::to_string(t);
@@ -32,7 +27,16 @@ std::string wall_path_24ID(int traj, int t) {
 
 std::string three_point_24ID(int traj) {
   std::string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/TwoPointWallCorrField/24D-0.00107/ama/t-min=0010/results=" + std::to_string(traj) + "/avg ; type=0";    
-    // "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator/t=" + std::to_string(t);
+  assert(dirExists(path));
+  return path;
+}
+
+
+std::string three_point_32ID(int traj) {
+	std::string str_traj = std::to_string(traj);
+	if(str_traj.size()==3) str_traj = "0" + str_traj;
+
+  std::string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/TwoPointWallCorrField/32D-0.00107/ama/t-min=0010/results=" + str_traj + "/avg ; type=0";    
   assert(dirExists(path));
   return path;
 }
@@ -69,23 +73,23 @@ std::string gauge_transform_path(int traj) {
 	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/gauge-transform";
 }
 
-std::string three_point_sloppy_path(int traj) {
-	std::string str_traj = std::to_string(traj);
-	if(str_traj.size()==3) str_traj = "0" + str_traj;
-
-	std::string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/sloppy/results=" + str_traj + "/t-min=0010/avg ; type=0 ; accuracy=0";
-	
-	return path;
-}
-
-std::string three_point_exact_path(int traj) {
-	std::string str_traj = std::to_string(traj);
-	if(str_traj.size()==3) str_traj = "0" + str_traj;
-
-	std::string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/ama/results=" + str_traj + "/ama ; t-min=0010/avg ; type=0";
-	
-	return path;
-}
+// std::string three_point_sloppy_path(int traj) {
+// 	std::string str_traj = std::to_string(traj);
+// 	if(str_traj.size()==3) str_traj = "0" + str_traj;
+//
+// 	std::string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/sloppy/results=" + str_traj + "/t-min=0010/avg ; type=0 ; accuracy=0";
+// 	
+// 	return path;
+// }
+//
+// std::string three_point_exact_path(int traj) {
+// 	std::string str_traj = std::to_string(traj);
+// 	if(str_traj.size()==3) str_traj = "0" + str_traj;
+//
+// 	std::string path = "/gpfs/mira-fs1/projects/HadronicLight_4/ctu/hlbl/hlbl-pion/ThreePointCorrField/32D-0.00107/ama/results=" + str_traj + "/ama ; t-min=0010/avg ; type=0";
+// 	
+// 	return path;
+// }
 
 
 

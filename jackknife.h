@@ -70,6 +70,7 @@ struct Jack_para {
   double leptonic_time_limit;
 
   std::vector<int> lat_size;
+  std::vector<int> traj_skip; // skip these trajectories
   int traj_start, traj_end, traj_sep, traj_num;
   int time_cutoff_start, time_cutoff_end, time_cutoff_num;
 
@@ -80,8 +81,8 @@ struct Jack_para {
 };
 
 void Jack_para::get_leptonic(LatticePGG &lat) {
-  if(target == "real_CUBA3d" || target == "imag_CUBA3d") get_leptonic_CUBA3d(file_p1, file_p3, lat, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
-  else if(target == "real") Grid::QCD::get_leptonic(file_p3, lat, LEPTONIC_SPACE_LIMIT, LEPTONIC_TIME_LIMIT);
+  if(target == "real_CUBA3d" || target == "imag_CUBA3d") get_leptonic_CUBA3d(file_p1, file_p3, lat, leptonic_space_limit, leptonic_time_limit);
+  else if(target == "real") Grid::QCD::get_leptonic(file_p3, lat, leptonic_space_limit, leptonic_time_limit);
   else if(target == "imag_analytic") imag_part(lat, M_h);
   else if(target == "form_factor") form_factor_integrand(lat, M_h); // technically this is not leptonic part; but for convience I put it in get_leptonic function
   else assert(0);
@@ -89,7 +90,8 @@ void Jack_para::get_leptonic(LatticePGG &lat) {
 
 void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
   if(ensemble == "Pion_32ID") {
-    std::string file = three_point_exact_path(traj); 
+    // std::string file = three_point_exact_path(traj); 
+    std::string file = three_point_32ID(traj); 
     read_cheng_PGG(three_point, file);
   }
   else if(ensemble == "Pion_32IDF") {
@@ -98,7 +100,7 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
   }
   else if(ensemble == "Pion_24ID") {
     std::string file = three_point_24ID(traj);
-    read_cheng_PGG(three_point, file); // FIXME: change this after cheng generated his three point functions
+    read_cheng_PGG(three_point, file);
   }
   else assert(0);
 }

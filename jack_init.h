@@ -29,10 +29,11 @@ void init_para(int argc, char **argv, Jack_para &para)
   po::options_description desc("jackknife options");
   desc.add_options()("help", "help message")
                     ("ensemble", po::value<std::string>(&para.ensemble))
-                    ("lat_size", po::value<std::string>()->multitoken())
+                    ("lat_size", po::value<std::string>())
                     ("traj_start", po::value<int>(&para.traj_start)->default_value(1000))
                     ("traj_end", po::value<int>(&para.traj_end)->default_value(1000))
                     ("traj_sep", po::value<int>(&para.traj_sep)->default_value(10))
+                    ("traj_skip", po::value<std::string>()->default_value(""))
                     ("time_cutoff_start", po::value<int>(&para.time_cutoff_start)->default_value(1))
                     ("time_cutoff_end", po::value<int>(&para.time_cutoff_end)->default_value(16))
                     ("target", po::value<std::string>(&para.target)->default_value(""))
@@ -48,10 +49,16 @@ void init_para(int argc, char **argv, Jack_para &para)
   /////////////////////////////////////////////
 
   cmdOptionIntVector(vm["lat_size"].as<std::string>(), para.lat_size);
+  para.leptonic_space_limit = para.lat_size[0] / 2; // this should match the CUBA calculation of leptonic part
+  para.leptonic_time_limit = 16; 
 
+  cmdOptionIntVector(vm["traj_skip"].as<std::string>(), para.traj_skip);
+  for(int t: para.traj_skip) assert(t > para.traj_start && t < para.traj_end);
 
-  para.traj_num = (para.traj_end - para.traj_start) / para.traj_sep + 1;
+  para.traj_num = (para.traj_end - para.traj_start) / para.traj_sep + 1 - para.traj_skip.size();
   para.time_cutoff_num = para.time_cutoff_end - para.time_cutoff_start + 1;
+
+  assert(para.time_cutoff_end <= para.leptonic_time_limit); // If target requires reading integrals, larger time cutoff does not make any sense since leptonic part is 0.
 
   // hadronic part
   if(para.ensemble == "Pion_32ID") {
@@ -70,6 +77,7 @@ void init_para(int argc, char **argv, Jack_para &para)
     para.N_h = 69.268015;
     para.Z_V = 0.68339;
   }
+
   else assert(0);
 
   para.hadron_coeff = 1./ (3 * std::sqrt(2)) * para.Z_V * para.Z_V * 2. * para.M_h / para.N_h;
@@ -101,6 +109,7 @@ void init_para(int argc, char **argv, Jack_para &para)
 
   /////////////////////////////////////
 	std::cout << std::string(20, '*') << std::endl;
+  std::cout << "ensemble: " << para.ensemble << std::endl;
   std::cout << "M_h: " << para.M_h << std::endl;
   std::cout << "N_h: " << para.N_h << std::endl;
   std::cout << "Z_V: " << para.Z_V << std::endl;
@@ -113,6 +122,7 @@ void init_para(int argc, char **argv, Jack_para &para)
 	std::cout << "traj_start: " << para.traj_start << std::endl;
 	std::cout << "traj_end: " << para.traj_end << std::endl;
 	std::cout << "traj_sep: " << para.traj_sep << std::endl;
+	std::cout << "traj_skip: " << para.traj_skip << std::endl;
 	std::cout << "traj_num: " << para.traj_num << std::endl;
 	std::cout << std::string(20, '*') << std::endl;
 	std::cout << "time_cutoff_start: " << para.time_cutoff_start << std::endl;

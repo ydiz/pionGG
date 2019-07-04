@@ -30,7 +30,7 @@ void read_integrals(const std::string &filename, int space_limit, int time_limit
 {
 
 	std::vector<int> shape {int(space_limit * std::sqrt(3)) + 2, time_limit + 1};
-	assert(shape[0]==29 && shape[1]==17);	
+	// assert(shape[0]==29 && shape[1]==17);	
   
   data.resize(shape[0]);
 	for(int i = 0; i < shape[0]; i++)

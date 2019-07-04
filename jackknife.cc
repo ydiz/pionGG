@@ -18,9 +18,6 @@ using namespace Grid;
 using namespace Grid::QCD;
 using namespace qlat;
 
-// const std::vector<int> gcoor({32, 32, 32, 64});
-// const std::vector<int> gcoor({24, 24, 24, 64});
-
 int main(int argc, char* argv[])
 {
 
@@ -31,7 +28,6 @@ int main(int argc, char* argv[])
   Jack_para para;
   init_para(argc, argv, para);
 
-  // GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(gcoor, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
   GridCartesian * grid = SpaceTimeGrid::makeFourDimGrid(para.lat_size, GridDefaultSimd(Nd,vComplex::Nsimd()), mpi_coor);
 
   LatticePGG leptonic(grid);
@@ -40,14 +36,20 @@ int main(int argc, char* argv[])
   // two dimensaional jackknife results. dim1: time cutoff. dim2: traj_num
   std::vector<std::vector<double>> jackknife_results(para.time_cutoff_num, std::vector<double>(para.traj_num));
 
+  int skipped = 0; // number of trajectories already skipped
   for(int traj = para.traj_start; traj <= para.traj_end; traj += para.traj_sep) {
+
+    if(std::find(para.traj_skip.begin(), para.traj_skip.end(), traj) != para.traj_skip.end()) {
+      ++skipped;
+      continue;
+    }
 
     LatticePGG three_point(grid);
     para.get_three_point(three_point, traj);
 
     std::vector<double> cutoffs = para.get_result_with_cutoff(three_point, leptonic);
 
-    int traj_idx = (traj - para.traj_start)/para.traj_sep;
+    int traj_idx = (traj - para.traj_start) / para.traj_sep - skipped;
     for(int time_cutoff = para.time_cutoff_start; time_cutoff <= para.time_cutoff_end; ++time_cutoff) {
       int t_idx = time_cutoff - para.time_cutoff_start;
       jackknife_results[t_idx][traj_idx] = cutoffs[time_cutoff]; 
