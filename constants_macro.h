@@ -6,6 +6,12 @@ std::string point_path_strange_24ID(int traj) {
   return path;
 }
 
+std::string wall_path_ud_48I(int traj, int t) {
+   std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/48I/wall-src/results/48I-0.00078/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator/t=" + std::to_string(t);
+  assert(dirExists(path));
+  return path;
+}
+
 std::string wall_path_strange_32D(int traj, int t) {
   std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/wall-src-strange/results/32D-0.00107/results="+ std::to_string(traj) + "/huge-data/wall_src_propagator/strange ; t=" + std::to_string(t);
   assert(dirExists(path));
@@ -51,17 +57,19 @@ std::string gauge_transform_path_24D(int traj) {
 }
 
 
-std::string wall_path_32DF(int traj) {
-  return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32Dfine/wall-src/results/32Dfine-0.0001/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator";
-}
+// std::string wall_path_32DF(int traj) {
+//   return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32Dfine/wall-src/results/32Dfine-0.0001/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator";
+// }
+//
+// std::string wall_path_32D_sloppy(int traj) {
+// 	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator";
+// }
+//
+// std::string wall_path_32D_exact(int traj) {
+// 	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src-exact-2/results/32D-0.00107/results="+ std::to_string(traj) + "/huge-data/wall_src_propagator";
+// }
 
-std::string wall_path_32D_sloppy(int traj) {
-	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator";
-}
 
-std::string wall_path_32D_exact(int traj) {
-	return "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src-exact-2/results/32D-0.00107/results="+ std::to_string(traj) + "/huge-data/wall_src_propagator";
-}
 
 
 
@@ -95,13 +103,22 @@ std::string gauge_transform_path(int traj) {
 
 std::string three_point_path_32IDF(int traj) {
 
-  std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/em-corr/results/32Dfine-0.0001/results="+ std::to_string(traj) + "/contraction-with-point/pion_gg/decay_cheng";
+  // std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/em-corr/results/32Dfine-0.0001/results="+ std::to_string(traj) + "/contraction-with-point/pion_gg/decay_cheng";
+  std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/em-corr/results/32Dfine-0.0001/results="+ std::to_string(traj) + "/contraction-with-point-old/pion_gg/decay_cheng";
 
-  std::cout << path << std::endl;
+  // std::cout << path << std::endl;
   assert(dirExists(path));
 	
 	return path;
 }
 
+std::string three_point_48I(int traj) {
+
+  std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/em-corr/results/48I-0.00078/results=" + std::to_string(traj) + "/contraction-with-point/pion_gg/decay_cheng";
+  std::cout << path << std::endl;
+  assert(dirExists(path));
+	
+	return path;
+}
 
 

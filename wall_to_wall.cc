@@ -53,7 +53,8 @@ std::vector<double> pion_corr(int traj, GridBase *grid) {
   for(int t=0; t<T; ++t) {
 
     // std::string path = wall_path_ud_32D(traj, t);
-    std::string path = wall_path_24ID(traj, t);
+    // std::string path = wall_path_24ID(traj, t);
+    std::string path = wall_path_ud_48I(traj, t);
     read_qlat_propagator(prop, path);
 
     std::vector<typename LatticePropagator::vector_object::scalar_object> slice_sum;
@@ -84,7 +85,8 @@ using namespace Grid::QCD;
 
 
 // std::vector<int> gcoor({32, 32, 32, 64});
-std::vector<int> gcoor({24, 24, 24, 64});
+// std::vector<int> gcoor({24, 24, 24, 64});
+std::vector<int> gcoor({48, 48, 48, 96});
 
 int main(int argc, char* argv[])
 {
@@ -97,7 +99,8 @@ int main(int argc, char* argv[])
 
 	// int traj_start = 200, traj_end = 430, traj_sep = 10; // for 32IDF
 	// int traj_start = 1200, traj_end = 1200, traj_sep = 10; 
-	int traj_start = 2370, traj_end = 2510, traj_sep = 10; // for 24ID
+	// int traj_start = 2370, traj_end = 2510, traj_sep = 10; // for 24ID
+	int traj_start = 1490, traj_end = 1730, traj_sep = 20; // for 48I  (We also have traj 1290-1430)
   int traj_num = (traj_end - traj_start) / traj_sep + 1;
 
 	std::cout << std::string(20, '*') << std::endl;
