@@ -43,6 +43,36 @@ struct TypeMap<Grid::ComplexD> {
 	using type = Grid::vComplexD;
 };
 
+namespace Grid {
+namespace QCD {
+using LatticeLoop = Lattice<iScalar<iScalar<iVector<vComplex, 4> > >>;
+
+}}
+void grid_convert(Grid::QCD::LatticeLoop& grid_loop, const qlat::FieldM<qlat::Complex, 4>& qlat_loop)
+{
+  using namespace Grid;
+  using namespace Grid::QCD;
+  const qlat::Geometry& geo = qlat_loop.geo;
+#pragma omp parallel for
+  for (long index = 0; index < geo.local_volume(); ++index) {
+    const qlat::Coordinate xl = geo.coordinate_from_index(index); // get  local coordinate
+    std::vector<int> coor = grid_convert(xl); // just copy the four components of xl to a vector<int>
+
+    qlat::Vector<qlat::Complex> qlat_loop_site = qlat_loop.get_elems_const(xl); // qlat_loop_site is a vector of Complex; vector size is 16
+		assert(qlat_loop_site.size()==4);
+		
+    typename LatticeLoop::vector_object::scalar_object grid_loop_site;
+		// assert(sizeof(qlat_loop_site) == sizeof(grid_loop_site));
+
+		// Complex *p_qlat = (Complex *)&qlat_loop_site; // T is either ComplexF or ComplexD
+		// std::copy(p_qlat, p_qlat + 16, (Complex *)&grid_loop_site);	
+		std::copy(qlat_loop_site.data(), qlat_loop_site.data() + 4, (Complex *)&grid_loop_site);	
+
+    pokeLocalSite(grid_loop_site, grid_loop, coor);
+  }
+}
+
+
 // only for double precision PionGGElemField
 void grid_convert(Grid::QCD::LatticePGG& grid_pgg, const qlat::PionGGElemField& qlat_pgg)
 {
@@ -206,7 +236,15 @@ void print_field(const T &field) {
 
 namespace Grid {
 namespace QCD {
-
+// FIXME: grid_convert has not been defined
+void read_loop(LatticeLoop &lat, const std::string &path) {
+  qlat::FieldM<Complex, 4> qlat_loop;
+  // qlat::dist_read_field_double(qlat_pgg, path);
+	dist_read_field_double_from_float(qlat_loop, path);
+  grid_convert(lat, qlat_loop);
+  // print_qlat_field_site(qlat_loop, {1,1,1,3});
+  // print_qlat_field_site(qlat_loop, {2,1,4,3});
+}
 // for both wall and point propagators
 void read_qlat_propagator(LatticePropagator &lat, const std::string &path) {
 	qlat::Propagator4d qlat_prop;
@@ -228,3 +266,4 @@ void read_luchang_PGG(LatticePGG &lat, const std::string &path) {
 }
 
 }}
+

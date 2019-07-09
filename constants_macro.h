@@ -1,5 +1,21 @@
 #pragma once
 
+/////////////////////////////////////
+
+
+std::string loop_path_24ID(int traj) {
+  std::string path ="/home/ljin/application/Public/Muon-GM2-cc/jobs/convert/data/24D/light-minus-heavy-1/traj=0" + std::to_string(traj); 
+  assert(dirExists(path));
+  return path;
+}
+
+
+
+//////////////////////////////////////////////////
+
+
+
+
 std::string point_path_strange_24ID(int traj) {
   std::string path = "/home/ljin/application/Public/Muon-GM2-cc/jobs/32D/discon-1/results/prop-hvp ; results=" + std::to_string(traj) + "/huge-data/prop-point-src";
   assert(dirExists(path));
@@ -19,7 +35,7 @@ std::string wall_path_strange_32D(int traj, int t) {
 }
 
 // the same as wall_path_32D_sloppy
-std::string wall_path_ud_32D(int traj, int t) {
+std::string wall_path_ud_32ID(int traj, int t) {
   std::string path = "/home/ljin/application/Public/Qlat-CPS-cc/jobs/32D/wall-src/results/32D-0.00107/results=" + std::to_string(traj) + "/huge-data/wall_src_propagator/t=" + std::to_string(t);
   assert(dirExists(path));
   return path;
