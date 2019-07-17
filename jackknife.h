@@ -88,30 +88,43 @@ void Jack_para::get_leptonic(LatticePGG &lat) {
   else assert(0);
 }
 
+// return <Jmu(-w/2) Jnu(w/2) |pi> / hadron_coeff
 void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
+
+	static LatticeComplex pp(three_point._grid); 
+  static bool pp_initialzed = false;
+  if(!pp_initialzed) {
+    get_translational_factor(pp, M_h); // translational factor 
+    pp_initialzed = true;
+  }
+
   if(ensemble == "Pion_32ID") {
     // std::string file = three_point_exact_path(traj); 
     std::string file = three_point_32ID(traj); 
     read_cheng_PGG(three_point, file);
+    three_point = imag(three_point) * pp;
   }
   else if(ensemble == "Pion_32IDF") {
     std::string file = three_point_path_32IDF(traj);
     read_luchang_PGG(three_point, file); // FIXME: change this after cheng generated his three point functions
+    three_point = imag(three_point) * pp;
   }
   else if(ensemble == "Pion_48I") {
     std::string file = three_point_48I(traj);
     read_luchang_PGG(three_point, file); // FIXME: change this after cheng generated his three point functions
+    three_point = imag(three_point) * pp;
   }
   else if(ensemble == "Pion_24ID") {
     std::string file = three_point_24ID(traj);
     read_cheng_PGG(three_point, file);
+    three_point = imag(three_point) * pp;
   }
   else assert(0);
 }
 
 std::vector<double> Jack_para::get_result_with_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic) {
   if(target=="form_factor") return form_factor(three_point, leptonic, hadron_coeff, M_h);
-  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff, M_h);
+  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
   else assert(0);
 }
 

@@ -55,20 +55,10 @@ std::vector<double> mult_HL_cutoff(const LatticePGG &hadronic, const LatticePGG 
 
 // L_{mu nu}(w) = lepton_coeff * leptonic
 // H_{mu nu}(w) = <0| Jmu(w/2) Jnu(-w/2) |pi> = hadron_coeff * three piont function
-std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff, double hadron_coeff, double Mpi_lat) { 
+std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff, double hadron_coeff) { 
 
-	static LatticeComplex pp(three_point._grid); 
-  static bool pp_initialzed = false;
-  if(!pp_initialzed) {
-    get_translational_factor(pp, Mpi_lat); // translational factor 
-    pp_initialzed = true;
-  }
 
-	LatticePGG hadronic(three_point._grid);
-	hadronic = three_point * pp;
-  hadronic = imag(hadronic); 
-
-	std::vector<double> ret = mult_HL_cutoff(hadronic, leptonic);
+	std::vector<double> ret = mult_HL_cutoff(three_point, leptonic);
 
   std::vector<double> amplitude_M(ret.size());
   for(int i=0; i<ret.size(); ++i) amplitude_M[i] = hadron_coeff * lepton_coeff * ret[i];
