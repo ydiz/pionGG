@@ -43,6 +43,7 @@ int main(int argc, char* argv[])
       ++skipped;
       continue;
     }
+    std::cout << "traj: " << traj  << std::endl;
 
     LatticePGG three_point(grid);
     para.get_three_point(three_point, traj);
@@ -65,7 +66,17 @@ int main(int argc, char* argv[])
     cout << "jackknife samples: " << endl;
     cout << jackknife_results[time_cutoff - para.time_cutoff_start] << endl;
 
-    jack_stats(jackknife_results[time_cutoff - para.time_cutoff_start]); // jackknife average and error
+    std::vector<RealD> jack = jack_stats(jackknife_results[time_cutoff - para.time_cutoff_start]); // jackknife average and error
+    if(para.target != "form_factor") {
+      double me = 511000;
+      double Mpi = 135000000;
+      double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi));
+      double Gamma_coeff = 2.0 * beta / (16 * M_PI * Mpi); // the first factor 2.0 comes from adding two possible polarizations
+      double Gamma_photons = 7.82;
+      double BR_coeff = Gamma_coeff / Gamma_photons;
+      std::cout << "Relative Branching Ratio average: " << BR_coeff * jack[0] * jack[0] << std::endl;
+      std::cout << "Relative Branching Ratio error: " << 2. * BR_coeff * jack[0] * jack[1] << std::endl;
+    }
   }
 
   Grid_finalize();

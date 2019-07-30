@@ -136,8 +136,11 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
 std::vector<double> Jack_para::get_result_with_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic) {
   if(target=="form_factor") return form_factor(three_point, leptonic, hadron_coeff, M_h);
   else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") {
-    if(doAmplitude) return calculate_decay_amplitude_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
-    else return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
+    // if(doAmplitude) return calculate_decay_amplitude_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
+    // else return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
+    std::cout << "before xxx" << std::endl;
+calculate_decay_amplitude_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
+    std::cout << "after xxx" << std::endl;
   }
   else assert(0);
 }
