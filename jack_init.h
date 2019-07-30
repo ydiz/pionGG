@@ -37,6 +37,7 @@ void init_para(int argc, char **argv, Jack_para &para)
                     ("time_cutoff_start", po::value<int>(&para.time_cutoff_start)->default_value(1))
                     ("time_cutoff_end", po::value<int>(&para.time_cutoff_end)->default_value(16))
                     ("target", po::value<std::string>(&para.target)->default_value(""))
+                    ("doAmplitude", po::value<bool>(&para.doAmplitude)->default_value(false))
                     ("file_p3", po::value<std::string>(&para.file_p3)->default_value(""))
                     ("file_p1", po::value<std::string>(&para.file_p1)->default_value(""))
                     ;
@@ -64,6 +65,17 @@ void init_para(int argc, char **argv, Jack_para &para)
     para.traj_sep = 10;
     para.traj_skip = {};
   }
+  else if(para.ensemble == "Pion_32ID_disc2") {
+    para.M_h = 0.139474;
+    para.N_h = 52.089753;
+    para.Z_V = 0.7260;
+
+    para.lat_size = {32, 32, 32, 64};
+    para.traj_start = 1080;
+    para.traj_end = 1370;
+    para.traj_sep = 10;
+    para.traj_skip = {1200, 1210};
+  }
   else if(para.ensemble == "Pion_24ID") {
     para.M_h = 0.13975;
     para.N_h = 51.561594;
@@ -74,6 +86,18 @@ void init_para(int argc, char **argv, Jack_para &para)
     para.traj_end = 2640;
     para.traj_sep = 10;
     para.traj_skip = {2360, 2520, 2540, 2580};
+  }
+  else if(para.ensemble == "Pion_24ID_disc") {
+    para.M_h = 0.13975;
+    para.N_h = 51.561594;
+    para.Z_V = 0.7267;
+
+    para.lat_size = {24, 24, 24, 64};
+    para.traj_start = 1000;
+    // para.traj_end = 2230;
+    para.traj_end = 2290;
+    para.traj_sep = 10;
+    para.traj_skip = {1020, 1060, 1100, 1340};
   }
 
   else if(para.ensemble == "Pion_32IDF") {
@@ -146,6 +170,7 @@ void init_para(int argc, char **argv, Jack_para &para)
   std::cout << "Z_V: " << para.Z_V << std::endl;
   std::cout << std::string(20, '*') << std::endl;
   std::cout << "target: " << para.target << std::endl;
+  std::cout << std::boolalpha << "doAmplitude: " << para.doAmplitude << std::endl;
   std::cout << "file_p3: " << para.file_p3 << std::endl;
   std::cout << "file_p1: " << para.file_p1 << std::endl;
   std::cout << std::string(20, '*') << std::endl;

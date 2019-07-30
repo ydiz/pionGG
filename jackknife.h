@@ -63,6 +63,7 @@ struct Jack_para {
 
   // leptonic part
   std::string target;
+  bool doAmplitude; // control calculate amplitude or decay rate
   std::string file_p3;
   std::string file_p1;
   double lep_coeff;
@@ -99,7 +100,6 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
   }
 
   if(ensemble == "Pion_32ID") {
-    // std::string file = three_point_exact_path(traj); 
     std::string file = three_point_32ID(traj); 
     read_cheng_PGG(three_point, file);
     three_point = imag(three_point) * pp;
@@ -119,12 +119,26 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
     read_cheng_PGG(three_point, file);
     three_point = imag(three_point) * pp;
   }
+  else if(ensemble == "Pion_24ID_disc") {
+    std::string file = three_point_disc_24ID(traj);
+    readScidac(three_point, file);
+    // three_point = imag(three_point) * pp;
+  }
+  else if(ensemble == "Pion_32ID_disc2") {
+    std::string file = three_point_disc2_32ID(traj);
+    readScidac(three_point, file);
+    three_point = real(three_point) * pp;
+  }
   else assert(0);
+  if(target=="form_factor") three_point = three_point / pp;
 }
 
 std::vector<double> Jack_para::get_result_with_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic) {
   if(target=="form_factor") return form_factor(three_point, leptonic, hadron_coeff, M_h);
-  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
+  else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") {
+    if(doAmplitude) return calculate_decay_amplitude_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
+    else return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
+  }
   else assert(0);
 }
 

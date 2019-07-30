@@ -80,5 +80,16 @@ std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, c
 
 
 
+std::vector<double> calculate_decay_amplitude_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff, double hadron_coeff) { 
+	std::vector<double> ret = mult_HL_cutoff(three_point, leptonic);
+
+  std::vector<double> amplitude_M(ret.size());
+  for(int i=0; i<ret.size(); ++i) amplitude_M[i] = hadron_coeff * lepton_coeff * ret[i];
+
+  return amplitude_M; // return real part of branching ratio
+}
+
+
+
 }}
 
