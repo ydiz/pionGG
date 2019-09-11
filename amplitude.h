@@ -55,31 +55,6 @@ std::vector<double> mult_HL_cutoff(const LatticePGG &hadronic, const LatticePGG 
 
 // // L_{mu nu}(w) = lepton_coeff * leptonic
 // // H_{mu nu}(w) = <0| Jmu(w/2) Jnu(-w/2) |pi> = hadron_coeff * three piont function
-// std::vector<double> calculate_decay_rate_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff, double hadron_coeff) { 
-//
-//
-// 	std::vector<double> ret = mult_HL_cutoff(three_point, leptonic);
-//
-//   std::vector<double> amplitude_M(ret.size());
-//   for(int i=0; i<ret.size(); ++i) amplitude_M[i] = hadron_coeff * lepton_coeff * ret[i];
-//
-// 	double me = 511000;
-// 	double Mpi = 135000000;
-// 	double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi));
-//   double Gamma_coeff = 2.0 * beta / (16 * M_PI * Mpi); // the first factor 2.0 comes from adding two possible polarizations
-// 	// double Gamma = Gamma_coeff * amplitude_M * amplitude_M;
-//
-// 	double Gamma_photons = 7.82;
-// 	// double R_real = Gamma / Gamma_photons;
-//
-//   std::vector<double> R_real(ret.size());
-//   for(int i=0; i<ret.size(); ++i) R_real[i] = (Gamma_coeff / Gamma_photons) * amplitude_M[i] *amplitude_M[i]; 
-//   
-//   return R_real; // return real part of branching ratio
-// }
-
-
-
 std::vector<double> calculate_decay_amplitude_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic, double lepton_coeff, double hadron_coeff) { 
 	std::vector<double> ret = mult_HL_cutoff(three_point, leptonic);
 

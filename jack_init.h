@@ -37,7 +37,6 @@ void init_para(int argc, char **argv, Jack_para &para)
                     ("time_cutoff_start", po::value<int>(&para.time_cutoff_start)->default_value(1))
                     ("time_cutoff_end", po::value<int>(&para.time_cutoff_end)->default_value(16))
                     ("target", po::value<std::string>(&para.target)->default_value(""))
-                    ("doAmplitude", po::value<bool>(&para.doAmplitude)->default_value(false))
                     ("file_p3", po::value<std::string>(&para.file_p3)->default_value(""))
                     ("file_p1", po::value<std::string>(&para.file_p1)->default_value(""))
                     ;
@@ -51,6 +50,21 @@ void init_para(int argc, char **argv, Jack_para &para)
 
   // cmdOptionIntVector(vm["lat_size"].as<std::string>(), para.lat_size);
   // cmdOptionIntVector(vm["traj_skip"].as<std::string>(), para.traj_skip);
+
+  if(para.ensemble.substr(0,4)=="Pion") {
+      double me = 511000;
+      double Mpi = 135000000;
+      double beta = std::sqrt(1 - 4*me*me / (Mpi*Mpi));
+      double Gamma_coeff = 2.0 * beta / (16 * M_PI * Mpi); // the first factor 2.0 comes from adding two possible polarizations
+      double Gamma_photons = 7.82;
+      para.BR_coeff = Gamma_coeff / Gamma_photons;
+  }
+  else if(para.ensemble.substr(0,4)=="Kaon") {
+    //TODO
+    para.BR_coeff = 0.;
+  }
+  else assert(0);
+  assert(para.BR_coeff != 0.);
 
 
   // hadronic part
@@ -94,12 +108,10 @@ void init_para(int argc, char **argv, Jack_para &para)
 
     para.lat_size = {24, 24, 24, 64};
     para.traj_start = 1000;
-    // para.traj_end = 2230;
     para.traj_end = 2290;
     para.traj_sep = 10;
     para.traj_skip = {1020, 1060, 1100, 1340};
   }
-
   else if(para.ensemble == "Pion_32IDF") {
     para.M_h = 0.10468;
     para.N_h = 69.268015;
@@ -170,7 +182,6 @@ void init_para(int argc, char **argv, Jack_para &para)
   std::cout << "Z_V: " << para.Z_V << std::endl;
   std::cout << std::string(20, '*') << std::endl;
   std::cout << "target: " << para.target << std::endl;
-  std::cout << std::boolalpha << "doAmplitude: " << para.doAmplitude << std::endl;
   std::cout << "file_p3: " << para.file_p3 << std::endl;
   std::cout << "file_p1: " << para.file_p1 << std::endl;
   std::cout << std::string(20, '*') << std::endl;

@@ -46,7 +46,6 @@ std::vector<RealD> jack_stats(const std::vector<RealD>& data)
 
   std::cout << "jackknife average: " << jack_stats[0] << std::endl;
   std::cout << "jackknife error: " << jack_stats[1] << std::endl;
-  std::cout << std::string(20, '*') << std::endl;
 
   return jack_stats;
 }
@@ -60,10 +59,10 @@ struct Jack_para {
   double N_h; // normalization of wall src operator. N_h = <0 | pi(0) | pi>
   double Z_V;
   double hadron_coeff;
+  double BR_coeff; // decay rate = BR_coeff * |M|^2; BR does not contain lattice quantities. (use physical electron and pion mass)
 
   // leptonic part
   std::string target;
-  bool doAmplitude; // control calculate amplitude or decay rate
   std::string file_p3;
   std::string file_p1;
   double lep_coeff;
@@ -136,11 +135,7 @@ void Jack_para::get_three_point(LatticePGG &three_point, int traj) {
 std::vector<double> Jack_para::get_result_with_cutoff(const LatticePGG &three_point, const LatticePGG &leptonic) {
   if(target=="form_factor") return form_factor(three_point, leptonic, hadron_coeff, M_h);
   else if(target == "real" || target == "real_CUBA3d" || target=="imag_analytic" || target == "imag_CUBA3d") {
-    // if(doAmplitude) return calculate_decay_amplitude_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
-    // else return calculate_decay_rate_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
-    std::cout << "before xxx" << std::endl;
-calculate_decay_amplitude_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
-    std::cout << "after xxx" << std::endl;
+    return calculate_decay_amplitude_cutoff(three_point, leptonic, lep_coeff, hadron_coeff);
   }
   else assert(0);
 }
