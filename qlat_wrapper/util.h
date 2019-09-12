@@ -7,7 +7,7 @@
 #include <assert.h>
 
 #include <qlat/grid.h>
-#include "../pGG.h"
+#include <headers/pGG.h>
 
 
 std::vector<int> read_mpi_coor(const std::string &prefix) {
@@ -242,8 +242,6 @@ void read_loop(LatticeLoop &lat, const std::string &path) {
   // qlat::dist_read_field_double(qlat_pgg, path);
 	dist_read_field_double_from_float(qlat_loop, path);
   grid_convert(lat, qlat_loop);
-  // print_qlat_field_site(qlat_loop, {1,1,1,3});
-  // print_qlat_field_site(qlat_loop, {2,1,4,3});
 }
 // for both wall and point propagators
 void read_qlat_propagator(LatticePropagator &lat, const std::string &path) {
